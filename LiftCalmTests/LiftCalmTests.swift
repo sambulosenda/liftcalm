@@ -163,6 +163,70 @@ struct LiftCalmTests {
         #expect(prs.isEmpty)
     }
 
+    // MARK: - Readiness
+
+    @Test func noHistoryReadsAsFreshAndTrainingOnly() {
+        let score = ReadinessEngine.compute(load: .fresh)
+        #expect(score.isTrainingOnly)
+        #expect(score.value >= 80) // fresh → primed/ready
+        #expect(score.band == .primed || score.band == .ready)
+    }
+
+    @Test func recentHeavyTrainingLowersReadiness() {
+        let rested = ReadinessEngine.compute(load: TrainingLoad(
+            hoursSinceLastSession: 60, setsLast7Days: 20, avgDailySetsLast28Days: 4))
+        let fatigued = ReadinessEngine.compute(load: TrainingLoad(
+            hoursSinceLastSession: 1, setsLast7Days: 80, avgDailySetsLast28Days: 4))
+        #expect(fatigued.value < rested.value)
+    }
+
+    @Test func bandThresholds() {
+        #expect(ReadinessBand(score: 39) == .recover)
+        #expect(ReadinessBand(score: 40) == .steady)
+        #expect(ReadinessBand(score: 60) == .ready)
+        #expect(ReadinessBand(score: 80) == .primed)
+    }
+
+    @Test func healthSignalsMakeItNotTrainingOnly() {
+        var inputs = RecoveryInputs.none
+        inputs.sleepHours = 8
+        let score = ReadinessEngine.compute(load: .fresh, inputs: inputs)
+        #expect(!score.isTrainingOnly)
+        #expect(score.components.contains { $0.id == "sleep" })
+    }
+
+    @Test func poorSleepDragsScoreDown() {
+        let good = ReadinessEngine.compute(
+            load: .fresh, inputs: RecoveryInputs(sleepHours: 8))
+        let poor = ReadinessEngine.compute(
+            load: .fresh, inputs: RecoveryInputs(sleepHours: 3))
+        #expect(poor.value < good.value)
+    }
+
+    @Test func trainingLoadFromWorkoutsCountsRecentSets() {
+        let bench = Exercise(name: "Bench", muscleGroup: .chest, equipment: .barbell)
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        let recent = Workout(
+            startedAt: now.addingTimeInterval(-86_400), // 1 day ago
+            endedAt: now.addingTimeInterval(-86_000),
+            entries: [ExerciseEntry(order: 0, exercise: bench, sets: [
+                SetEntry(order: 0, weightKilograms: 60, reps: 5, isCompleted: true),
+                SetEntry(order: 1, weightKilograms: 60, reps: 5, isCompleted: true),
+            ])]
+        )
+        let old = Workout(
+            startedAt: now.addingTimeInterval(-40 * 86_400), // 40 days ago, outside windows
+            endedAt: now.addingTimeInterval(-40 * 86_400 + 3000),
+            entries: [ExerciseEntry(order: 0, exercise: bench, sets: [
+                SetEntry(order: 0, weightKilograms: 60, reps: 5, isCompleted: true),
+            ])]
+        )
+        let load = TrainingLoad.from(workouts: [recent, old], now: now)
+        #expect(load.setsLast7Days == 2)
+        #expect(load.hoursSinceLastSession != nil)
+        #expect(load.hoursSinceLastSession! < 25)
+    }
+
     // MARK: - Formatting
 
     @Test func clockFormatsMinutesAndSeconds() {

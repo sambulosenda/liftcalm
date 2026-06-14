@@ -23,10 +23,17 @@ struct TodayView: View {
 
     private var recentWorkouts: [Workout] { Array(finishedWorkouts.prefix(3)) }
 
+    /// Training-load-based readiness (no HealthKit yet; engine accepts optional
+    /// sleep/HRV/RHR signals when those are wired in later).
+    private var readiness: ReadinessScore {
+        ReadinessEngine.compute(load: TrainingLoad.from(workouts: finishedWorkouts, now: Date()))
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
+                    ReadinessCard(score: readiness)
                     primaryAction
                     templatesSection
                     recentSection
