@@ -210,7 +210,7 @@ private struct ColumnLabels: View {
     let container = PreviewData.container
     let session = SessionController()
     let workout = PreviewData.activeWorkout(in: container.mainContext)
-    session.configure(context: container.mainContext, settings: AppSettings())
+    session.configure(context: container.mainContext, settings: AppSettings(), notifications: NotificationManager())
     session.resume(workout)
     return ActiveWorkoutView()
         .modelContainer(container)

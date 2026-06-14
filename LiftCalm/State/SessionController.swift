@@ -44,13 +44,15 @@ final class SessionController {
 
     @ObservationIgnored private var context: ModelContext?
     @ObservationIgnored private var settings: AppSettings?
+    @ObservationIgnored private var notifications: NotificationManager?
     @ObservationIgnored private var restTask: Task<Void, Never>?
 
     /// Called once at app launch to wire up persistence and preferences, then
     /// resume any session left unfinished (e.g. the app was killed mid-workout).
-    func configure(context: ModelContext, settings: AppSettings) {
+    func configure(context: ModelContext, settings: AppSettings, notifications: NotificationManager) {
         self.context = context
         self.settings = settings
+        self.notifications = notifications
         resumeUnfinishedWorkout()
     }
 
@@ -199,8 +201,10 @@ final class SessionController {
     func startRest(seconds: Int? = nil) {
         let duration = max(1, seconds ?? settings?.defaultRestSeconds ?? 90)
         restTotalSeconds = duration
-        restEndDate = Date().addingTimeInterval(TimeInterval(duration))
+        let end = Date().addingTimeInterval(TimeInterval(duration))
+        restEndDate = end
         scheduleCompletionTimer(after: TimeInterval(duration))
+        scheduleRestNotification(at: end)
     }
 
     /// Adds (or removes, with a negative value) time from the running rest.
@@ -208,9 +212,11 @@ final class SessionController {
         guard let current = restEndDate else { return }
         let newEnd = current.addingTimeInterval(TimeInterval(deltaSeconds))
         // Don't let an adjustment end rest in the past.
-        restEndDate = max(newEnd, Date().addingTimeInterval(1))
+        let end = max(newEnd, Date().addingTimeInterval(1))
+        restEndDate = end
         restTotalSeconds = max(1, restTotalSeconds + deltaSeconds)
-        scheduleCompletionTimer(after: restEndDate!.timeIntervalSinceNow)
+        scheduleCompletionTimer(after: end.timeIntervalSinceNow)
+        scheduleRestNotification(at: end)
     }
 
     func stopRest() {
@@ -218,6 +224,13 @@ final class SessionController {
         restTask = nil
         restEndDate = nil
         restTotalSeconds = 0
+        notifications?.cancelRestComplete()
+    }
+
+    /// Schedules the background rest-complete alert when the user opted in.
+    private func scheduleRestNotification(at end: Date) {
+        guard settings?.restNotifications == true else { return }
+        notifications?.scheduleRestComplete(at: end)
     }
 
     /// Re-evaluate after returning from the background — the scheduled timer may

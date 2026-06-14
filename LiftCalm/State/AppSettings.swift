@@ -23,6 +23,12 @@ final class AppSettings {
     var autoStartRest: Bool { didSet { store(autoStartRest, .autoRest) } }
     /// Fire a haptic when rest completes.
     var restHaptics: Bool { didSet { store(restHaptics, .haptics) } }
+    /// Post a local notification when rest finishes (so it alerts while backgrounded).
+    var restNotifications: Bool { didSet { store(restNotifications, .restNotify) } }
+    /// Optional gentle daily training reminder.
+    var workoutReminderEnabled: Bool { didSet { store(workoutReminderEnabled, .reminderOn) } }
+    var reminderHour: Int { didSet { store(reminderHour, .reminderHour) } }
+    var reminderMinute: Int { didSet { store(reminderMinute, .reminderMinute) } }
     var hasCompletedOnboarding: Bool { didSet { store(hasCompletedOnboarding, .onboarded) } }
 
     init(defaults: UserDefaults = .standard) {
@@ -38,6 +44,10 @@ final class AppSettings {
             ?? storedGoal.defaultRestSeconds
         autoStartRest = defaults.object(forKey: Key.autoRest.rawValue) as? Bool ?? true
         restHaptics = defaults.object(forKey: Key.haptics.rawValue) as? Bool ?? true
+        restNotifications = defaults.object(forKey: Key.restNotify.rawValue) as? Bool ?? true
+        workoutReminderEnabled = defaults.object(forKey: Key.reminderOn.rawValue) as? Bool ?? false
+        reminderHour = defaults.object(forKey: Key.reminderHour.rawValue) as? Int ?? 18
+        reminderMinute = defaults.object(forKey: Key.reminderMinute.rawValue) as? Int ?? 0
         hasCompletedOnboarding = defaults.bool(forKey: Key.onboarded.rawValue)
     }
 
@@ -47,6 +57,7 @@ final class AppSettings {
 
     private enum Key: String {
         case weightUnit, experience, goal, rest, autoRest, haptics, onboarded
+        case restNotify, reminderOn, reminderHour, reminderMinute
     }
 
     private func store(_ value: Any, _ key: Key) {

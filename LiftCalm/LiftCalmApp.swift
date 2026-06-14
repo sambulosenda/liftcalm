@@ -15,6 +15,7 @@ struct LiftCalmApp: App {
     let modelContainer: ModelContainer
     @State private var settings = AppSettings()
     @State private var session = SessionController()
+    @State private var notifications = NotificationManager()
 
     init() {
         do {
@@ -31,12 +32,14 @@ struct LiftCalmApp: App {
             AppRootView()
                 .environment(settings)
                 .environment(session)
+                .environment(notifications)
                 .tint(Theme.accent)
                 .task {
                     // Seed built-ins once and wire the session to persistence.
                     let context = modelContainer.mainContext
                     SeedData.seedIfNeeded(context)
-                    session.configure(context: context, settings: settings)
+                    session.configure(context: context, settings: settings, notifications: notifications)
+                    await notifications.refreshStatus()
                 }
         }
         .modelContainer(modelContainer)

@@ -11,6 +11,7 @@ import SwiftData
 
 struct SettingsView: View {
     @Environment(AppSettings.self) private var settings
+    @Environment(NotificationManager.self) private var notifications
     @Query(filter: #Predicate<Workout> { $0.endedAt != nil }) private var finishedWorkouts: [Workout]
 
     @State private var exportFile: ExportFile?
@@ -41,6 +42,33 @@ struct SettingsView: View {
                     Text("Rest Timer")
                 } footer: {
                     Text("The timer starts automatically when you complete a set.")
+                }
+
+                Section {
+                    Toggle("Rest timer alerts", isOn: $settings.restNotifications)
+                        .onChange(of: settings.restNotifications) { _, on in
+                            if on { Task { await notifications.requestAuthorization() } }
+                        }
+                    Toggle("Workout reminders", isOn: $settings.workoutReminderEnabled)
+                        .onChange(of: settings.workoutReminderEnabled) { _, on in
+                            if on {
+                                notifications.scheduleDailyReminder(
+                                    hour: settings.reminderHour, minute: settings.reminderMinute)
+                            } else {
+                                notifications.cancelDailyReminder()
+                            }
+                        }
+                    if settings.workoutReminderEnabled {
+                        DatePicker("Reminder time", selection: reminderTime, displayedComponents: .hourAndMinute)
+                    }
+                } header: {
+                    Text("Notifications")
+                } footer: {
+                    if notifications.authorizationStatus == .denied {
+                        Text("Notifications are turned off. Enable them in iOS Settings to get rest and reminder alerts.")
+                    } else {
+                        Text("Rest alerts fire even when LiftCalm is in the background.")
+                    }
                 }
 
                 Section("Training Profile") {
@@ -84,6 +112,26 @@ struct SettingsView: View {
                 Text(exportError ?? "")
             }
         }
+    }
+
+    /// Bridges the stored hour/minute to the DatePicker and reschedules on change.
+    private var reminderTime: Binding<Date> {
+        Binding(
+            get: {
+                Calendar.current.date(
+                    from: DateComponents(hour: settings.reminderHour, minute: settings.reminderMinute)
+                ) ?? Date()
+            },
+            set: { newValue in
+                let parts = Calendar.current.dateComponents([.hour, .minute], from: newValue)
+                settings.reminderHour = parts.hour ?? 18
+                settings.reminderMinute = parts.minute ?? 0
+                if settings.workoutReminderEnabled {
+                    notifications.scheduleDailyReminder(
+                        hour: settings.reminderHour, minute: settings.reminderMinute)
+                }
+            }
+        )
     }
 
     private func exportButton(_ title: String, systemImage: String, format: DataExport.Format) -> some View {
@@ -139,4 +187,5 @@ private struct ExportShareSheet: View {
     SettingsView()
         .modelContainer(PreviewData.container)
         .environment(AppSettings())
+        .environment(NotificationManager())
 }
