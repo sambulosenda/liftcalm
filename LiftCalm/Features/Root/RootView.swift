@@ -12,6 +12,9 @@ import SwiftUI
 struct RootView: View {
     @Environment(SessionController.self) private var session
     @State private var showingActiveWorkout = false
+    /// Presented after the active-workout sheet finishes dismissing, so the two
+    /// sheets never contend for presentation in the same frame.
+    @State private var pendingSummary: WorkoutSummary?
 
     var body: some View {
         TabView {
@@ -33,8 +36,14 @@ struct RootView: View {
                 NowTrainingAccessory { showingActiveWorkout = true }
             }
         }
-        .sheet(isPresented: $showingActiveWorkout) {
+        .sheet(isPresented: $showingActiveWorkout, onDismiss: {
+            // Surface the celebratory summary only once the active sheet is gone.
+            pendingSummary = session.lastFinishedSummary
+        }) {
             ActiveWorkoutView()
+        }
+        .sheet(item: $pendingSummary, onDismiss: { session.lastFinishedSummary = nil }) { summary in
+            WorkoutSummaryView(summary: summary)
         }
     }
 }

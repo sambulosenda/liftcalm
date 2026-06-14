@@ -6,6 +6,7 @@
 //
 
 import Testing
+import Foundation
 @testable import LiftCalm
 
 struct LiftCalmTests {
@@ -104,6 +105,52 @@ struct LiftCalmTests {
         #expect(byRegion[.upper] == 500)
         #expect(byRegion[.lower] == 500)
         #expect(byRegion[.core] == nil)
+    }
+
+    // MARK: - Personal records
+
+    private func makeWorkout(_ exercise: Exercise, weightKg: Double, reps: Int, completed: Bool = true) -> Workout {
+        let entry = ExerciseEntry(order: 0, exercise: exercise, sets: [
+            SetEntry(order: 0, weightKilograms: weightKg, reps: reps, isCompleted: completed),
+        ])
+        return Workout(endedAt: .now, entries: [entry])
+    }
+
+    @Test func firstTimeExerciseIsAPersonalRecord() {
+        let bench = Exercise(name: "Bench", muscleGroup: .chest, equipment: .barbell)
+        let workout = makeWorkout(bench, weightKg: 60, reps: 5)
+
+        let prs = WorkoutMetrics.detectPersonalRecords(for: workout, history: [])
+        #expect(prs.count == 1)
+        #expect(prs.first?.exerciseName == "Bench")
+        #expect(prs.first?.isFirstTime == true)
+    }
+
+    @Test func beatingPriorBestIsARecord() {
+        let bench = Exercise(name: "Bench", muscleGroup: .chest, equipment: .barbell)
+        let past = makeWorkout(bench, weightKg: 60, reps: 5)   // e1RM 70
+        let now = makeWorkout(bench, weightKg: 70, reps: 5)    // e1RM ~81.7
+
+        let prs = WorkoutMetrics.detectPersonalRecords(for: now, history: [past])
+        #expect(prs.count == 1)
+        #expect(prs.first?.isFirstTime == false)
+    }
+
+    @Test func notBeatingPriorBestIsNoRecord() {
+        let bench = Exercise(name: "Bench", muscleGroup: .chest, equipment: .barbell)
+        let past = makeWorkout(bench, weightKg: 100, reps: 5)
+        let now = makeWorkout(bench, weightKg: 60, reps: 5)
+
+        let prs = WorkoutMetrics.detectPersonalRecords(for: now, history: [past])
+        #expect(prs.isEmpty)
+    }
+
+    @Test func incompleteSetsDoNotCountForPRs() {
+        let bench = Exercise(name: "Bench", muscleGroup: .chest, equipment: .barbell)
+        let workout = makeWorkout(bench, weightKg: 200, reps: 5, completed: false)
+
+        let prs = WorkoutMetrics.detectPersonalRecords(for: workout, history: [])
+        #expect(prs.isEmpty)
     }
 
     // MARK: - Formatting

@@ -44,7 +44,7 @@ final class SessionController {
 
     @ObservationIgnored private var context: ModelContext?
     @ObservationIgnored private var settings: AppSettings?
-    @ObservationIgnored private var restTimer: Timer?
+    @ObservationIgnored private var restTask: Task<Void, Never>?
 
     /// Called once at app launch to wire up persistence and preferences, then
     /// resume any session left unfinished (e.g. the app was killed mid-workout).
@@ -102,12 +102,34 @@ final class SessionController {
         return workout
     }
 
-    /// Marks the session finished and clears it from active state.
+    /// Set when a session finishes with logged work — drives the celebratory
+    /// summary. Cleared when the summary is dismissed.
+    var lastFinishedSummary: WorkoutSummary?
+
+    /// Marks the session finished, builds the summary (with any PRs), and clears
+    /// it from active state.
     func finishWorkout() {
         stopRest()
-        activeWorkout?.endedAt = Date()
+        guard let workout = activeWorkout else { return }
+        workout.endedAt = Date()
         save()
+
+        // Only surface a summary when something was actually logged.
+        if !workout.entries.isEmpty {
+            let history = priorFinishedWorkouts(excluding: workout)
+            let records = WorkoutMetrics.detectPersonalRecords(for: workout, history: history)
+            lastFinishedSummary = WorkoutSummary(workout: workout, personalRecords: records)
+        }
         activeWorkout = nil
+    }
+
+    private func priorFinishedWorkouts(excluding workout: Workout) -> [Workout] {
+        guard let context else { return [] }
+        let descriptor = FetchDescriptor<Workout>(
+            predicate: #Predicate { $0.endedAt != nil }
+        )
+        let finished = (try? context.fetch(descriptor)) ?? []
+        return finished.filter { $0.id != workout.id }
     }
 
     /// Deletes the in-progress session entirely (user discarded it).
@@ -192,8 +214,8 @@ final class SessionController {
     }
 
     func stopRest() {
-        restTimer?.invalidate()
-        restTimer = nil
+        restTask?.cancel()
+        restTask = nil
         restEndDate = nil
         restTotalSeconds = 0
     }
@@ -208,9 +230,13 @@ final class SessionController {
     }
 
     private func scheduleCompletionTimer(after interval: TimeInterval) {
-        restTimer?.invalidate()
-        restTimer = Timer.scheduledTimer(withTimeInterval: max(0.1, interval), repeats: false) { [weak self] _ in
-            Task { @MainActor in self?.completeRest() }
+        restTask?.cancel()
+        let nanoseconds = UInt64(max(0.1, interval) * 1_000_000_000)
+        // Inherits this @MainActor context, so completeRest() is hop-free.
+        restTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: nanoseconds)
+            guard !Task.isCancelled else { return }
+            self?.completeRest()
         }
     }
 

@@ -25,6 +25,66 @@ enum WorkoutMetrics {
         guard weight > 0, reps > 0 else { return 0 }
         return weight * Double(reps)
     }
+
+    /// Detects estimated-1RM personal records set in `workout`, comparing each
+    /// exercise against its best qualifying set across `history` (prior finished
+    /// workouts, excluding this one). One record per exercise. An exercise with
+    /// no prior history is flagged as a first-time record.
+    ///
+    /// Pure over the passed-in data so it's unit-testable without a store.
+    static func detectPersonalRecords(
+        for workout: Workout,
+        history: [Workout]
+    ) -> [PersonalRecord] {
+        // Best historical estimated 1RM per exercise id.
+        var historicalBest: [UUID: Double] = [:]
+        for past in history {
+            for entry in past.entries {
+                guard let id = entry.exercise?.id else { continue }
+                for set in entry.sets where set.countsTowardMetrics {
+                    historicalBest[id] = max(historicalBest[id] ?? 0, set.estimatedOneRepMax)
+                }
+            }
+        }
+
+        // Best estimated 1RM achieved in this workout per exercise id.
+        var currentBest: [UUID: (name: String, value: Double)] = [:]
+        for entry in workout.entries {
+            guard let exercise = entry.exercise else { continue }
+            for set in entry.sets where set.countsTowardMetrics {
+                let best = currentBest[exercise.id]?.value ?? 0
+                if set.estimatedOneRepMax > best {
+                    currentBest[exercise.id] = (exercise.name, set.estimatedOneRepMax)
+                }
+            }
+        }
+
+        var records: [PersonalRecord] = []
+        for (id, current) in currentBest {
+            let prior = historicalBest[id]
+            guard current.value > (prior ?? 0) else { continue }
+            records.append(
+                PersonalRecord(
+                    id: id,
+                    exerciseName: current.name,
+                    estimatedOneRepMaxKilograms: current.value,
+                    isFirstTime: prior == nil
+                )
+            )
+        }
+        // Strongest lifts first.
+        return records.sorted { $0.estimatedOneRepMaxKilograms > $1.estimatedOneRepMaxKilograms }
+    }
+}
+
+/// An estimated-1RM personal record hit in a session.
+struct PersonalRecord: Identifiable, Equatable {
+    /// The exercise's id (one record per exercise).
+    let id: UUID
+    let exerciseName: String
+    let estimatedOneRepMaxKilograms: Double
+    /// True when this is the first time the exercise was logged.
+    let isFirstTime: Bool
 }
 
 // MARK: - Model conveniences
