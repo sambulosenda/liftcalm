@@ -110,6 +110,8 @@ struct WorkoutSummaryView: View {
             Text(value).font(.headline.monospacedDigit())
             Text(label).font(.caption).foregroundStyle(.secondary)
         }
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(label): \(value)")

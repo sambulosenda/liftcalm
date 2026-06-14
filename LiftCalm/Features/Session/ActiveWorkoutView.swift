@@ -199,6 +199,8 @@ private struct ColumnLabels: View {
             Color.clear.frame(width: 40)
         }
         .font(.caption2.weight(.semibold))
+        .lineLimit(1)
+        .minimumScaleFactor(0.5)
         .foregroundStyle(.tertiary)
         .accessibilityHidden(true)
     }

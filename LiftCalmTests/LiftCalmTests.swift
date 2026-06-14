@@ -73,6 +73,16 @@ struct LiftCalmTests {
         #expect(planned.volume == 0)
     }
 
+    @Test func zeroRepSetDoesNotCountButBodyweightDoes() {
+        // 0 reps = empty, must not count even if completed.
+        let empty = SetEntry(order: 0, weightKilograms: 50, reps: 0, isCompleted: true)
+        #expect(!empty.countsTowardMetrics)
+
+        // Bodyweight: 0 weight is fine as long as reps were logged.
+        let bodyweight = SetEntry(order: 1, weightKilograms: 0, reps: 12, isCompleted: true)
+        #expect(bodyweight.countsTowardMetrics)
+    }
+
     // MARK: - Aggregation
 
     @Test func workoutVolumeExcludesWarmupAndIncomplete() {

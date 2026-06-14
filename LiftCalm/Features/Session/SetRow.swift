@@ -97,6 +97,8 @@ struct SetRow: View {
         } label: {
             Text(set.rpe.map { $0.formatted(.number.precision(.fractionLength(0...1))) } ?? "RPE")
                 .font(.footnote.weight(.medium))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
                 .foregroundStyle(set.rpe == nil ? .secondary : Theme.calmBlue)
                 .frame(width: 42, height: 34)
                 .background(.quaternary.opacity(0.5), in: .rect(cornerRadius: 10))
@@ -116,8 +118,12 @@ struct SetRow: View {
         }
         .buttonStyle(.plain)
         .frame(width: 40, height: 40)
+        // A set is completable only once it has reps; un-completing stays allowed
+        // so a mistaken tap is always reversible.
+        .disabled(!set.isCompleted && set.reps == 0)
         .sensoryFeedback(.success, trigger: set.isCompleted) { _, new in new }
         .accessibilityLabel(set.isCompleted ? "Mark set incomplete" : "Complete set")
+        .accessibilityHint(set.reps == 0 && !set.isCompleted ? "Enter reps first" : "")
     }
 
     // MARK: - Bindings

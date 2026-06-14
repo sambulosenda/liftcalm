@@ -134,11 +134,17 @@ private struct TemplateCard: View {
     let template: WorkoutTemplate
     let action: () -> Void
 
+    // Scale the card with Dynamic Type so titles/summaries don't truncate at
+    // large accessibility sizes.
+    @ScaledMetric private var cardWidth = 170
+    @ScaledMetric private var cardHeight = 130
+
     var body: some View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 8) {
                 Text(template.name)
                     .font(.headline)
+                    .lineLimit(2)
                 Text(template.summary)
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -146,10 +152,12 @@ private struct TemplateCard: View {
                 Spacer(minLength: 0)
                 Label("\(template.items.count) exercises", systemImage: "list.bullet")
                     .font(.caption2)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
                     .foregroundStyle(Theme.accent)
             }
             .padding(16)
-            .frame(width: 170, height: 130, alignment: .leading)
+            .frame(width: cardWidth, height: cardHeight, alignment: .leading)
             .glassCard()
         }
         .buttonStyle(.plain)

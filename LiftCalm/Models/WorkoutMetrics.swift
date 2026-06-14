@@ -90,8 +90,10 @@ struct PersonalRecord: Identifiable, Equatable {
 // MARK: - Model conveniences
 
 extension SetEntry {
-    /// Counts toward metrics only when completed and not a warm-up.
-    var countsTowardMetrics: Bool { isCompleted && !isWarmup }
+    /// Counts toward metrics only when completed, not a warm-up, and with at
+    /// least one rep logged. Weight may be 0 (bodyweight moves still count as a
+    /// set); a set with 0 reps is empty and must not inflate counts or PRs.
+    var countsTowardMetrics: Bool { isCompleted && !isWarmup && reps > 0 }
 
     var volume: Double {
         guard countsTowardMetrics else { return 0 }
