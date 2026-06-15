@@ -11,6 +11,7 @@
 		35DDF704DAA469256BBF92DE /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5716EE74CB0378ACC73A80 /* WidgetSnapshot.swift */; };
 		A4976926AA8356CE7C7ABE98 /* ReadinessWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07BDD07232A0D9F76385BBA /* ReadinessWidget.swift */; };
 		BDF6A8E564589B962E0ACB49 /* LiftCalmWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 45606B766C022DD99CA42338 /* LiftCalmWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C31DEA0177CD8975E59C907B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EEED3BD13ACF004C2B325735 /* PrivacyInfo.xcprivacy */; };
 		C47774A62D4EE250D187B527 /* LiftCalmWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70F393EF4EDF1A731AF66E2 /* LiftCalmWidgetBundle.swift */; };
 /* End PBXBuildFile section */
 
@@ -63,21 +64,28 @@
 		96C84B7989160AB690567964 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B70F393EF4EDF1A731AF66E2 /* LiftCalmWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiftCalmWidgetBundle.swift; sourceTree = "<group>"; };
 		C07BDD07232A0D9F76385BBA /* ReadinessWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReadinessWidget.swift; sourceTree = "<group>"; };
+		EEED3BD13ACF004C2B325735 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4FCF5E6D2FDF45700008A78F /* LiftCalm */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = LiftCalm;
 			sourceTree = "<group>";
 		};
 		4FCF5E7B2FDF45710008A78F /* LiftCalmTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = LiftCalmTests;
 			sourceTree = "<group>";
 		};
 		4FCF5E852FDF45710008A78F /* LiftCalmUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = LiftCalmUITests;
 			sourceTree = "<group>";
 		};
@@ -124,6 +132,7 @@
 				7B5716EE74CB0378ACC73A80 /* WidgetSnapshot.swift */,
 				96C84B7989160AB690567964 /* Info.plist */,
 				20830837C4485B0CF2ACFA42 /* LiftCalmWidget.entitlements */,
+				EEED3BD13ACF004C2B325735 /* PrivacyInfo.xcprivacy */,
 			);
 			path = LiftCalmWidget;
 			sourceTree = "<group>";
@@ -322,6 +331,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C31DEA0177CD8975E59C907B /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,6 +523,7 @@
 				DEVELOPMENT_TEAM = Y53KNKBDS8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -546,6 +557,7 @@
 				DEVELOPMENT_TEAM = Y53KNKBDS8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

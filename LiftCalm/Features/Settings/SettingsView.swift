@@ -33,7 +33,9 @@ struct SettingsView: View {
                 }
 
                 plusSection
-                syncSection
+                // iCloud Sync deferred to v1.1 — re-add `syncSection` here once the
+                // CloudKit capability is added in Xcode and sync is device-tested. Until
+                // then the toggle would silently fall back to local storage, so it's hidden.
 
                 Section {
                     Stepper(
