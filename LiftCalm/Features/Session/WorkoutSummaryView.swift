@@ -65,9 +65,9 @@ struct WorkoutSummaryView: View {
 
     private var celebrationHeader: some View {
         VStack(spacing: Theme.Spacing.md) {
-            Image(systemName: "checkmark.seal.fill")
+            Image(systemName: isPersonalRecord ? "trophy.fill" : "checkmark.seal.fill")
                 .font(.system(size: 76))
-                .foregroundStyle(Theme.success)
+                .foregroundStyle(isPersonalRecord ? Theme.caution : Theme.success)
                 .symbolEffect(.bounce, value: appeared && !reduceMotion)
                 .accessibilityHidden(true)
             Text(headline)
@@ -82,8 +82,10 @@ struct WorkoutSummaryView: View {
         .accessibilityElement(children: .combine)
     }
 
+    private var isPersonalRecord: Bool { !summary.personalRecords.isEmpty }
+
     private var headline: String {
-        summary.personalRecords.isEmpty ? "Great work!" : "New record — nice!"
+        isPersonalRecord ? "New record — nice!" : "Great work!"
     }
 
     // MARK: - Stats
@@ -125,8 +127,14 @@ struct WorkoutSummaryView: View {
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(Theme.caution)
                 .accessibilityAddTraits(.isHeader)
-            ForEach(summary.personalRecords) { record in
+            ForEach(Array(summary.personalRecords.enumerated()), id: \.element.id) { index, record in
                 PersonalRecordRow(record: record, unit: settings.weightUnit)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 10)
+                    .animation(
+                        reduceMotion ? nil : .smooth(duration: 0.4).delay(0.25 + Double(index) * 0.08),
+                        value: appeared
+                    )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -134,7 +142,7 @@ struct WorkoutSummaryView: View {
 
     private var backgroundTint: some View {
         LinearGradient(
-            colors: [Theme.success.opacity(0.10), .clear],
+            colors: [(isPersonalRecord ? Theme.caution : Theme.success).opacity(0.10), .clear],
             startPoint: .top, endPoint: .center
         )
         .ignoresSafeArea()
