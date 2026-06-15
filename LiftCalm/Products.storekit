@@ -1,0 +1,51 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "5B9E2C10-0001-4A00-8000-000000000001",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "5B9E2C10-0001-4A00-8000-000000000002",
+      "localizations" : [
+        {
+          "description" : "Unlimited custom routines, the full recovery breakdown, and every Plus feature to come. A one-time unlock — yours for good.",
+          "displayName" : "LiftCalm Plus",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.sambulosendas1.LiftCalm.plus",
+      "referenceName" : "LiftCalm Plus",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 0,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

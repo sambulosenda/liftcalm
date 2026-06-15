@@ -180,4 +180,5 @@ private struct TemplateCard: View {
         .modelContainer(PreviewData.container)
         .environment(AppSettings())
         .environment(SessionController())
+        .environment(StoreManager())
 }

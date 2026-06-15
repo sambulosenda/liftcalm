@@ -16,6 +16,7 @@ struct LiftCalmApp: App {
     @State private var settings = AppSettings()
     @State private var session = SessionController()
     @State private var notifications = NotificationManager()
+    @State private var store = StoreManager()
 
     init() {
         do {
@@ -33,6 +34,7 @@ struct LiftCalmApp: App {
                 .environment(settings)
                 .environment(session)
                 .environment(notifications)
+                .environment(store)
                 .tint(Theme.accent)
                 .task {
                     // Seed built-ins once and wire the session to persistence.
@@ -40,6 +42,9 @@ struct LiftCalmApp: App {
                     SeedData.seedIfNeeded(context)
                     session.configure(context: context, settings: settings, notifications: notifications)
                     await notifications.refreshStatus()
+                    // Load the Plus product, reconcile the entitlement, and begin
+                    // listening for transaction updates.
+                    await store.start()
                 }
         }
         .modelContainer(modelContainer)

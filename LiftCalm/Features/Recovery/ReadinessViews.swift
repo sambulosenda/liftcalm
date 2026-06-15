@@ -44,39 +44,49 @@ struct ReadinessRing: View {
     }
 }
 
-/// Compact Today glance; taps through to the recovery detail.
+/// Compact Today glance. The score, band, and suggestion are always free; the
+/// full factor breakdown (RecoveryView) is a Plus feature, so a locked card
+/// opens the paywall instead of navigating.
 struct ReadinessCard: View {
     let score: ReadinessScore
+    @Environment(StoreManager.self) private var store
+    @Environment(\.presentPaywall) private var presentPaywall
 
     var body: some View {
-        NavigationLink {
-            RecoveryView(score: score)
-        } label: {
-            HStack(spacing: 16) {
-                ReadinessRing(value: score.value, band: score.band)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(score.band.label)
-                        .font(.headline)
-                        .foregroundStyle(score.band.tint)
-                    Text(score.suggestion)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: 4)
-                Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+        Group {
+            if store.isPlus {
+                NavigationLink { RecoveryView(score: score) } label: { glance(locked: false) }
+            } else {
+                Button { presentPaywall(.readiness) } label: { glance(locked: true) }
             }
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard()
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Readiness \(score.value) of 100, \(score.band.label)")
-        .accessibilityHint(score.suggestion)
+        .accessibilityHint(store.isPlus ? score.suggestion : "Unlock Plus to see the full breakdown")
+    }
+
+    private func glance(locked: Bool) -> some View {
+        HStack(spacing: 16) {
+            ReadinessRing(value: score.value, band: score.band)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(score.band.label)
+                    .font(.headline)
+                    .foregroundStyle(score.band.tint)
+                Text(score.suggestion)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 4)
+            Image(systemName: locked ? "lock.fill" : "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .glassCard()
     }
 }
 
@@ -181,7 +191,7 @@ private struct FactorRow: View {
     }
 }
 
-#Preview("Card") {
+#Preview("Card – Locked") {
     NavigationStack {
         ScrollView {
             ReadinessCard(score: ReadinessEngine.compute(
@@ -190,6 +200,19 @@ private struct FactorRow: View {
             .padding()
         }
     }
+    .environment(StoreManager())
+}
+
+#Preview("Card – Plus") {
+    NavigationStack {
+        ScrollView {
+            ReadinessCard(score: ReadinessEngine.compute(
+                load: TrainingLoad(hoursSinceLastSession: 20, setsLast7Days: 30, avgDailySetsLast28Days: 4)
+            ))
+            .padding()
+        }
+    }
+    .environment(StoreManager.unlockedPreview)
 }
 
 #Preview("Detail") {

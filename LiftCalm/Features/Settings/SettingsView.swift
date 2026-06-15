@@ -8,10 +8,13 @@
 
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct SettingsView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(NotificationManager.self) private var notifications
+    @Environment(StoreManager.self) private var store
+    @Environment(\.presentPaywall) private var presentPaywall
     @Query(filter: #Predicate<Workout> { $0.endedAt != nil }) private var finishedWorkouts: [Workout]
 
     @State private var exportFile: ExportFile?
@@ -28,6 +31,8 @@ struct SettingsView: View {
                         }
                     }
                 }
+
+                plusSection
 
                 Section {
                     Stepper(
@@ -114,6 +119,42 @@ struct SettingsView: View {
         }
     }
 
+    @ViewBuilder
+    private var plusSection: some View {
+        Section {
+            if store.isPlus {
+                HStack {
+                    Label("LiftCalm Plus", systemImage: "checkmark.seal.fill")
+                        .foregroundStyle(Theme.accent)
+                    Spacer()
+                    Text("Unlocked")
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                Button {
+                    presentPaywall(.generic)
+                } label: {
+                    HStack {
+                        Label("Unlock LiftCalm Plus", systemImage: "sparkles")
+                        Spacer()
+                        if let price = store.plusProduct?.displayPrice {
+                            Text(price).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                Button("Restore Purchases") { Task { await store.restore() } }
+            }
+        } header: {
+            Text("LiftCalm Plus")
+        } footer: {
+            if store.isPlus {
+                Text("Thanks for supporting LiftCalm. Every Plus feature is yours.")
+            } else {
+                Text("Unlimited routines, the full recovery breakdown, and more — a one-time unlock.")
+            }
+        }
+    }
+
     /// Bridges the stored hour/minute to the DatePicker and reschedules on change.
     private var reminderTime: Binding<Date> {
         Binding(
@@ -188,4 +229,5 @@ private struct ExportShareSheet: View {
         .modelContainer(PreviewData.container)
         .environment(AppSettings())
         .environment(NotificationManager())
+        .environment(StoreManager())
 }

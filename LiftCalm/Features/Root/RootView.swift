@@ -11,30 +11,35 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(SessionController.self) private var session
+    @State private var selectedTab: AppTab = .today
     @State private var showingActiveWorkout = false
     /// Presented after the active-workout sheet finishes dismissing, so the two
     /// sheets never contend for presentation in the same frame.
     @State private var pendingSummary: WorkoutSummary?
+    /// Non-nil while the Plus paywall is shown; the value is the gate that opened it.
+    @State private var paywallContext: PaywallContext?
 
     var body: some View {
-        TabView {
-            Tab("Today", systemImage: "figure.strengthtraining.traditional") {
+        TabView(selection: $selectedTab) {
+            Tab("Today", systemImage: "figure.strengthtraining.traditional", value: AppTab.today) {
                 TodayView(showingActiveWorkout: $showingActiveWorkout)
             }
-            Tab("History", systemImage: "clock.arrow.circlepath") {
+            Tab("History", systemImage: "clock.arrow.circlepath", value: AppTab.history) {
                 HistoryView()
             }
-            Tab("Library", systemImage: "books.vertical") {
+            Tab("Library", systemImage: "books.vertical", value: AppTab.library) {
                 LibraryView()
             }
-            Tab("Settings", systemImage: "gearshape") {
+            Tab("Settings", systemImage: "gearshape", value: AppTab.settings) {
                 SettingsView()
             }
         }
-        .tabViewBottomAccessory {
-            if session.isWorkoutActive {
-                NowTrainingAccessory { showingActiveWorkout = true }
-            }
+        // Gate the accessory *modifier*, not its content: returning an empty view
+        // from inside `tabViewBottomAccessory` still draws the persistent (empty)
+        // glass bar. The explicit `selection` binding above keeps the toggle's
+        // identity change from snapping the user back to the first tab.
+        .bottomAccessory(session.isWorkoutActive) {
+            NowTrainingAccessory { showingActiveWorkout = true }
         }
         .sheet(isPresented: $showingActiveWorkout, onDismiss: {
             // Surface the celebratory summary only once the active sheet is gone.
@@ -45,6 +50,12 @@ struct RootView: View {
         .sheet(item: $pendingSummary, onDismiss: { session.lastFinishedSummary = nil }) { summary in
             WorkoutSummaryView(summary: summary)
         }
+        .sheet(item: $paywallContext) { context in
+            PaywallView(context: context)
+        }
+        // Single app-level entry point for the paywall: any gated view calls
+        // `presentPaywall(.someContext)` and this hosts the sheet above the tabs.
+        .environment(\.presentPaywall, { paywallContext = $0 })
     }
 }
 
@@ -103,6 +114,28 @@ private struct RestPill: View {
             .font(.caption.weight(.semibold).monospacedDigit())
             .foregroundStyle(Theme.calmBlue)
             .labelStyle(.titleAndIcon)
+        }
+    }
+}
+
+private enum AppTab: Hashable {
+    case today, history, library, settings
+}
+
+private extension View {
+    /// Applies `tabViewBottomAccessory` only when `visible`. Gating the modifier
+    /// (rather than returning empty content from inside it) is what actually
+    /// removes the bar — an empty accessory builder still reserves and draws the
+    /// persistent glass slot.
+    @ViewBuilder
+    func bottomAccessory<Accessory: View>(
+        _ visible: Bool,
+        @ViewBuilder content: () -> Accessory
+    ) -> some View {
+        if visible {
+            tabViewBottomAccessory(content: content)
+        } else {
+            self
         }
     }
 }

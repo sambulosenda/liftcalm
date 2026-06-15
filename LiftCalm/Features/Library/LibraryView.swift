@@ -2,8 +2,10 @@
 //  LibraryView.swift
 //  LiftCalm
 //
-//  Browse and manage the exercise library. Custom exercises can be deleted;
-//  built-ins are kept (deleting them would break templates and history links).
+//  Two libraries in one: the exercise catalogue and your routines. Custom
+//  exercises and custom routines can be deleted; built-ins are kept (deleting
+//  them would break templates and history links). Saving more than the free
+//  routine allowance requires LiftCalm Plus.
 //
 
 import SwiftUI
@@ -11,58 +13,150 @@ import SwiftData
 
 struct LibraryView: View {
     @Environment(\.modelContext) private var context
+    @Environment(StoreManager.self) private var store
+    @Environment(\.presentPaywall) private var presentPaywall
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
+    @Query(sort: \WorkoutTemplate.name) private var templates: [WorkoutTemplate]
 
+    @State private var tab: LibraryTab = .exercises
     @State private var searchText = ""
-    @State private var showingCreate = false
+    @State private var showingCreateExercise = false
+    @State private var creatingRoutine = false
+    @State private var editingRoutine: WorkoutTemplate?
 
-    private var filtered: [Exercise] {
+    var body: some View {
+        NavigationStack {
+            Group {
+                switch tab {
+                case .exercises: exercisesList
+                case .routines: routinesList
+                }
+            }
+            .safeAreaInset(edge: .top) { tabPicker }
+            .navigationTitle("Library")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(addTitle, systemImage: "plus") { add() }
+                }
+            }
+            .sheet(isPresented: $showingCreateExercise) {
+                AddExerciseView()
+            }
+            .sheet(isPresented: $creatingRoutine) {
+                RoutineEditorView()
+            }
+            .sheet(item: $editingRoutine) { routine in
+                RoutineEditorView(routine: routine)
+            }
+        }
+    }
+
+    private var tabPicker: some View {
+        Picker("Library section", selection: $tab) {
+            ForEach(LibraryTab.allCases) { Text($0.title).tag($0) }
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(.bar)
+    }
+
+    // MARK: - Exercises
+
+    private var filteredExercises: [Exercise] {
         guard !searchText.isEmpty else { return exercises }
         return exercises.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }
 
     /// Group by muscle so the list reads like a coaching reference.
-    private var grouped: [(group: MuscleGroup, items: [Exercise])] {
-        Dictionary(grouping: filtered, by: \.muscleGroup)
+    private var groupedExercises: [(group: MuscleGroup, items: [Exercise])] {
+        Dictionary(grouping: filteredExercises, by: \.muscleGroup)
             .map { (group: $0.key, items: $0.value.sorted { $0.name < $1.name }) }
             .sorted { $0.group.displayName < $1.group.displayName }
     }
 
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach(grouped, id: \.group) { section in
-                    Section(section.group.displayName) {
-                        ForEach(section.items) { exercise in
-                            ExerciseLibraryRow(exercise: exercise)
-                                .swipeActions(edge: .trailing) {
-                                    if exercise.isCustom {
-                                        Button(role: .destructive) {
-                                            delete(exercise)
-                                        } label: {
-                                            Label("Delete", systemImage: "trash")
-                                        }
+    private var exercisesList: some View {
+        List {
+            ForEach(groupedExercises, id: \.group) { section in
+                Section(section.group.displayName) {
+                    ForEach(section.items) { exercise in
+                        ExerciseLibraryRow(exercise: exercise)
+                            .swipeActions(edge: .trailing) {
+                                if exercise.isCustom {
+                                    Button(role: .destructive) {
+                                        delete(exercise)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
                                     }
                                 }
-                        }
+                            }
                     }
                 }
             }
-            .listStyle(.insetGrouped)
-            .overlay {
-                if filtered.isEmpty {
-                    ContentUnavailableView.search(text: searchText)
+        }
+        .listStyle(.insetGrouped)
+        .overlay {
+            if filteredExercises.isEmpty {
+                ContentUnavailableView.search(text: searchText)
+            }
+        }
+        .searchable(text: $searchText, prompt: "Search exercises")
+    }
+
+    // MARK: - Routines
+
+    private var customTemplates: [WorkoutTemplate] { templates.filter { !$0.isBuiltIn } }
+    private var builtInTemplates: [WorkoutTemplate] { templates.filter(\.isBuiltIn) }
+
+    private var routinesList: some View {
+        List {
+            if !customTemplates.isEmpty {
+                Section {
+                    ForEach(customTemplates) { template in
+                        Button {
+                            editingRoutine = template
+                        } label: {
+                            RoutineRow(template: template, isCustom: true)
+                        }
+                        .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                delete(template)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
+                } header: {
+                    Text("My Routines")
+                } footer: {
+                    if !store.isPlus {
+                        Text("Free plan includes \(PlusPolicy.freeCustomRoutineLimit) routines. Unlock Plus for unlimited.")
+                    }
                 }
             }
-            .searchable(text: $searchText, prompt: "Search exercises")
-            .navigationTitle("Library")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add", systemImage: "plus") { showingCreate = true }
+            Section("Built-in") {
+                ForEach(builtInTemplates) { template in
+                    RoutineRow(template: template, isCustom: false)
                 }
             }
-            .sheet(isPresented: $showingCreate) {
-                AddExerciseView()
+        }
+        .listStyle(.insetGrouped)
+    }
+
+    // MARK: - Actions
+
+    private var addTitle: String { tab == .exercises ? "Add Exercise" : "Add Routine" }
+
+    private func add() {
+        switch tab {
+        case .exercises:
+            showingCreateExercise = true
+        case .routines:
+            if PlusPolicy.canCreateCustomRoutine(currentCount: customTemplates.count, isPlus: store.isPlus) {
+                creatingRoutine = true
+            } else {
+                presentPaywall(.routines)
             }
         }
     }
@@ -71,10 +165,64 @@ struct LibraryView: View {
         context.delete(exercise)
         try? context.save()
     }
+
+    private func delete(_ template: WorkoutTemplate) {
+        // Cascade removes the template's items.
+        context.delete(template)
+        try? context.save()
+    }
+}
+
+private enum LibraryTab: String, CaseIterable, Identifiable {
+    case exercises, routines
+    var id: String { rawValue }
+    var title: String { rawValue.capitalized }
+}
+
+private struct RoutineRow: View {
+    let template: WorkoutTemplate
+    let isCustom: Bool
+
+    private var exerciseCount: Int { template.items.count }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "list.bullet.rectangle.portrait")
+                .font(.body)
+                .foregroundStyle(Theme.accent)
+                .frame(width: 34, height: 34)
+                .background(Theme.accent.opacity(0.12), in: .circle)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(template.name)
+                    .font(.body)
+                if !template.summary.isEmpty {
+                    Text(template.summary)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+            Spacer()
+            Text("\(exerciseCount) exercise\(exerciseCount == 1 ? "" : "s")")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            if isCustom {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .contentShape(.rect)
+        .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(template.name), \(exerciseCount) exercises")
+        .accessibilityHint(isCustom ? "Edit this routine" : "")
+    }
 }
 
 #Preview {
     LibraryView()
         .modelContainer(PreviewData.container)
         .environment(AppSettings())
+        .environment(StoreManager())
 }
