@@ -76,7 +76,7 @@ struct ExercisePickerView: View {
 
     private var equipmentChips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
+            HStack(spacing: Theme.Spacing.sm) {
                 FilterChip(title: "All", isSelected: equipmentFilter == nil) {
                     equipmentFilter = nil
                 }
@@ -90,8 +90,8 @@ struct ExercisePickerView: View {
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            .padding(.horizontal, Theme.Spacing.lg)
+            .padding(.vertical, Theme.Spacing.sm)
         }
         .background(.bar)
     }
@@ -116,13 +116,13 @@ struct ExerciseLibraryRow: View {
     let exercise: Exercise
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Theme.Spacing.md) {
             Image(systemName: exercise.equipment.symbol)
                 .font(.body)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 34, height: 34)
                 .background(Theme.accent.opacity(0.12), in: .circle)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(exercise.name)
                     .font(.body)
                 Text(exercise.muscleGroup.displayName)
@@ -134,13 +134,13 @@ struct ExerciseLibraryRow: View {
                 Text("Custom")
                     .font(.caption2.weight(.semibold))
                     .foregroundStyle(.secondary)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
+                    .padding(.horizontal, Theme.Spacing.sm)
+                    .padding(.vertical, Theme.Spacing.xs)
                     .background(.quaternary, in: .capsule)
             }
         }
         .contentShape(.rect)
-        .padding(.vertical, 2)
+        .padding(.vertical, Theme.Spacing.xs)
         .accessibilityElement(children: .combine)
         .accessibilityHint("Adds \(exercise.name) to your workout")
     }
@@ -160,8 +160,8 @@ struct FilterChip: View {
                 if let systemImage { Image(systemName: systemImage) }
             }
             .font(.subheadline.weight(.medium))
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
+            .padding(.horizontal, Theme.Spacing.md)
+            .padding(.vertical, Theme.Spacing.sm)
             .foregroundStyle(isSelected ? .white : .primary)
             .background(
                 isSelected ? AnyShapeStyle(Theme.accent) : AnyShapeStyle(.quaternary),

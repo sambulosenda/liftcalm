@@ -30,14 +30,14 @@ struct WorkoutSummaryView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: Theme.Spacing.xl) {
                     celebrationHeader
                     statsCard
                     if !summary.personalRecords.isEmpty {
                         personalRecordsSection
                     }
                 }
-                .padding(20)
+                .padding(Theme.Spacing.lg)
             }
             .background(backgroundTint)
             .navigationTitle("Summary")
@@ -53,8 +53,8 @@ struct WorkoutSummaryView: View {
                     .buttonStyle(.glassProminentCompat)
                     .controlSize(.extraLarge)
                     .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 8)
+                    .padding(.horizontal, Theme.Spacing.lg)
+                    .padding(.bottom, Theme.Spacing.sm)
             }
         }
         .onAppear { appeared = true }
@@ -64,7 +64,7 @@ struct WorkoutSummaryView: View {
     // MARK: - Header
 
     private var celebrationHeader: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: Theme.Spacing.md) {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 76))
                 .foregroundStyle(Theme.success)
@@ -77,7 +77,7 @@ struct WorkoutSummaryView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
-        .padding(.top, 8)
+        .padding(.top, Theme.Spacing.sm)
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
     }
@@ -101,12 +101,12 @@ struct WorkoutSummaryView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
+        .padding(.vertical, Theme.Spacing.lg)
         .glassCard()
     }
 
     private func stat(_ value: String, _ label: String) -> some View {
-        VStack(spacing: 3) {
+        VStack(spacing: Theme.Spacing.xs) {
             Text(value).font(.headline.monospacedDigit())
             Text(label).font(.caption).foregroundStyle(.secondary)
         }
@@ -120,7 +120,7 @@ struct WorkoutSummaryView: View {
     // MARK: - PRs
 
     private var personalRecordsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             Label("Personal Records", systemImage: "trophy.fill")
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(Theme.caution)
@@ -146,12 +146,12 @@ private struct PersonalRecordRow: View {
     let unit: WeightUnit
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: Theme.Spacing.md) {
             Image(systemName: record.isFirstTime ? "sparkles" : "arrow.up.forward.circle.fill")
                 .font(.title2)
                 .foregroundStyle(Theme.caution)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(record.exerciseName)
                     .font(.headline)
                 Text(record.isFirstTime ? "First time logged" : "New estimated 1RM")
@@ -163,7 +163,7 @@ private struct PersonalRecordRow: View {
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(Theme.caution)
         }
-        .padding(16)
+        .padding(Theme.Spacing.lg)
         .glassCard()
         .accessibilityElement(children: .combine)
         .accessibilityLabel(

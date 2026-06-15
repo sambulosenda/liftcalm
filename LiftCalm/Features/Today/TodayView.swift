@@ -12,6 +12,7 @@ import SwiftData
 struct TodayView: View {
     @Environment(SessionController.self) private var session
     @Environment(\.modelContext) private var context
+    @Environment(\.colorScheme) private var colorScheme
     @Binding var showingActiveWorkout: Bool
 
     @Query(sort: \WorkoutTemplate.name) private var templates: [WorkoutTemplate]
@@ -32,13 +33,13 @@ struct TodayView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
                     ReadinessCard(score: readiness)
                     primaryAction
                     templatesSection
                     recentSection
                 }
-                .padding(20)
+                .padding(Theme.Spacing.lg)
             }
             .scrollEdgeEffectStyle(.soft, for: .top)
             .navigationTitle("Today")
@@ -49,7 +50,7 @@ struct TodayView: View {
     // MARK: - Primary action
 
     private var primaryAction: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Theme.Spacing.md) {
             Button {
                 startEmpty()
             } label: {
@@ -71,15 +72,15 @@ struct TodayView: View {
     // MARK: - Templates
 
     private var templatesSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             SectionHeader("Quick Start", subtitle: "Begin from a routine")
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                HStack(spacing: Theme.Spacing.md) {
                     ForEach(templates) { template in
                         TemplateCard(template: template) { start(from: template) }
                     }
                 }
-                .padding(.horizontal, 2)
+                .padding(.horizontal, Theme.Spacing.xs)
             }
             .scrollClipDisabled()
         }
@@ -89,7 +90,7 @@ struct TodayView: View {
 
     @ViewBuilder
     private var recentSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             SectionHeader("Recent", subtitle: nil)
             if recentWorkouts.isEmpty {
                 ContentUnavailableView(
@@ -98,7 +99,7 @@ struct TodayView: View {
                     description: Text("Your finished sessions will appear here.")
                 )
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
+                .padding(.vertical, Theme.Spacing.md)
             } else {
                 ForEach(recentWorkouts) { workout in
                     NavigationLink {
@@ -114,7 +115,7 @@ struct TodayView: View {
 
     private var backgroundTint: some View {
         LinearGradient(
-            colors: [Theme.accent.opacity(0.06), .clear],
+            colors: [Theme.accent.opacity(colorScheme == .dark ? 0.12 : 0.06), .clear],
             startPoint: .top, endPoint: .center
         )
         .ignoresSafeArea()
@@ -148,7 +149,7 @@ private struct TemplateCard: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                 Text(template.name)
                     .font(.headline)
                     .lineLimit(2)
@@ -163,7 +164,7 @@ private struct TemplateCard: View {
                     .minimumScaleFactor(0.7)
                     .foregroundStyle(Theme.accent)
             }
-            .padding(16)
+            .padding(Theme.Spacing.lg)
             .frame(width: cardWidth, height: cardHeight, alignment: .leading)
             .glassCard()
         }

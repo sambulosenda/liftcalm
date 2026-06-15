@@ -16,10 +16,10 @@ struct RestTimerBar: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 0.5)) { context in
             let remaining = session.restSecondsRemaining(asOf: context.date)
-            HStack(spacing: 14) {
+            HStack(spacing: Theme.Spacing.md) {
                 adjustButton(by: -15, symbol: "gobackward.15")
 
-                VStack(spacing: 4) {
+                VStack(spacing: Theme.Spacing.xs) {
                     Text(Formatting.clock(remaining))
                         .font(.title2.weight(.semibold).monospacedDigit())
                         .foregroundStyle(Theme.calmBlue)
@@ -35,11 +35,11 @@ struct RestTimerBar: View {
                     .buttonStyle(.plain)
                     .foregroundStyle(Theme.accent)
             }
-            .padding(.horizontal, 18)
-            .padding(.vertical, 12)
+            .padding(.horizontal, Theme.Spacing.lg)
+            .padding(.vertical, Theme.Spacing.md)
             .glassCard(cornerRadius: Theme.controlCornerRadius)
-            .padding(.horizontal, 12)
-            .padding(.bottom, 4)
+            .padding(.horizontal, Theme.Spacing.md)
+            .padding(.bottom, Theme.Spacing.xs)
             .accessibilityElement(children: .combine)
             .accessibilityLabel("Rest timer")
             .accessibilityValue("\(remaining) seconds remaining")

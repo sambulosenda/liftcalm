@@ -30,19 +30,19 @@ struct OnboardingView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Theme.Spacing.lg) {
             if !step.isWelcome {
                 OnboardingProgress(current: step.rawValue - 1, total: Step.allCases.count - 1)
-                    .padding(.horizontal, 24)
-                    .padding(.top, 12)
+                    .padding(.horizontal, Theme.Spacing.xl)
+                    .padding(.top, Theme.Spacing.md)
                     .transition(.opacity)
             }
 
             contentArea
 
             navButtons
-                .padding(.horizontal, 24)
-                .padding(.bottom, 12)
+                .padding(.horizontal, Theme.Spacing.xl)
+                .padding(.bottom, Theme.Spacing.md)
         }
         .background(backgroundGradient)
         .animation(stepAnimation, value: step)
@@ -62,7 +62,7 @@ struct OnboardingView: View {
                         minHeight: geo.size.height,
                         alignment: step.isWelcome ? .center : .top
                     )
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, Theme.Spacing.xl)
             }
             .scrollBounceBehavior(.basedOnSize)
         }
@@ -82,7 +82,7 @@ struct OnboardingView: View {
     // MARK: - Navigation
 
     private var navButtons: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Theme.Spacing.md) {
             if !step.isWelcome {
                 Button("Back") { back() }
                     .buttonStyle(.bordered)

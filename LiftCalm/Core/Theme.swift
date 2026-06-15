@@ -2,26 +2,73 @@
 //  Theme.swift
 //  LiftCalm
 //
-//  Calming palette — soft greens and blues. Defined in code so the app has a
-//  consistent identity without requiring asset-catalog round-trips during the
-//  foundation phase. Colors are chosen to keep contrast legible in both schemes.
+//  Calming palette — soft greens and blues. Each brand color is tuned *per
+//  scheme*: the light value is deepened so it stays legible as text/tint over
+//  light backgrounds, the dark value is lightened so it glows gently over dark.
+//  All four pass WCAG AA as small text in both schemes. Defined in code so the
+//  light/dark pair lives side-by-side and the brand stays a single source of
+//  truth (no asset-catalog drift) — call sites just use `Theme.accent`.
 //
 
 import SwiftUI
+import UIKit
 
 enum Theme {
-    /// Primary brand accent — a calm, grounded green.
-    static let accent = Color(red: 0.31, green: 0.62, blue: 0.51)
-    /// Secondary accent — soft blue, used for recovery / informational cues.
-    static let calmBlue = Color(red: 0.36, green: 0.55, blue: 0.71)
-    /// Positive / completion signal.
-    static let success = Color(red: 0.30, green: 0.66, blue: 0.46)
-    /// Gentle warning (e.g. deload hints) — never alarming red.
-    static let caution = Color(red: 0.82, green: 0.62, blue: 0.35)
+    /// Primary brand accent — a calm, grounded green. (L 5.0:1 · D 7.1:1)
+    static let accent = Color(light: 0x277552, dark: 0x5CB897)
+    /// Secondary accent — soft blue, used for recovery / informational cues. (L 5.2:1 · D 6.1:1)
+    static let calmBlue = Color(light: 0x34699A, dark: 0x6FA0C7)
+    /// Positive / completion signal. (L 4.5:1 · D 7.1:1)
+    static let success = Color(light: 0x2E7D4F, dark: 0x5CBA85)
+    /// Gentle warning (e.g. deload hints) — warm amber, never alarming red. (L 5.1:1 · D 8.1:1)
+    static let caution = Color(light: 0x8A5E10, dark: 0xE0A95C)
 
     /// Standard corner radius for cards so glass/material surfaces stay consistent.
     static let cardCornerRadius: CGFloat = 20
     static let controlCornerRadius: CGFloat = 14
+
+    /// Spacing rhythm on a 4pt grid. Use these for stack spacing and content
+    /// insets so the whole app shares one cadence; the tenth screen is free.
+    /// (Fixed control dimensions and icon-alignment insets are not spacing —
+    /// keep those as literals.)
+    enum Spacing {
+        /// 4 — micro gaps (title ↔ subtitle).
+        static let xs: CGFloat = 4
+        /// 8 — tight grouping.
+        static let sm: CGFloat = 8
+        /// 12 — default inter-item gap.
+        static let md: CGFloat = 12
+        /// 16 — screen gutters, card padding.
+        static let lg: CGFloat = 16
+        /// 24 — gaps between sections.
+        static let xl: CGFloat = 24
+        /// 32 — major / hero separation.
+        static let xxl: CGFloat = 32
+    }
+}
+
+extension Color {
+    /// A color that resolves to `light` in light mode and `dark` in dark mode.
+    /// Hex literals are `0xRRGGBB`. The dynamic `UIColor` provider also tracks
+    /// runtime appearance changes (e.g. Settings → Display), so every surface
+    /// that reads the token re-renders for free.
+    init(light: UInt32, dark: UInt32) {
+        self.init(uiColor: UIColor { traits in
+            UIColor(rgb: traits.userInterfaceStyle == .dark ? dark : light)
+        })
+    }
+}
+
+private extension UIColor {
+    /// 0xRRGGBB → opaque sRGB color.
+    convenience init(rgb: UInt32) {
+        self.init(
+            red: CGFloat((rgb >> 16) & 0xFF) / 255,
+            green: CGFloat((rgb >> 8) & 0xFF) / 255,
+            blue: CGFloat(rgb & 0xFF) / 255,
+            alpha: 1
+        )
+    }
 }
 
 extension ShapeStyle where Self == Color {

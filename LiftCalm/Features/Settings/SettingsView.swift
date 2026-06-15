@@ -200,7 +200,7 @@ private struct ExportShareSheet: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
+            VStack(spacing: Theme.Spacing.lg) {
                 Image(systemName: "square.and.arrow.up.on.square")
                     .font(.system(size: 52))
                     .foregroundStyle(Theme.accent)
@@ -213,7 +213,7 @@ private struct ExportShareSheet: View {
                 .buttonStyle(.glassProminentCompat)
                 .controlSize(.large)
             }
-            .padding(28)
+            .padding(Theme.Spacing.xl)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }

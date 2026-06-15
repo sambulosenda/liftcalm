@@ -15,7 +15,7 @@ struct OnboardingWelcomeStep: View {
     @State private var animate = false
 
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: Theme.Spacing.xl) {
             Spacer()
             ZStack {
                 Circle()
@@ -29,7 +29,7 @@ struct OnboardingWelcomeStep: View {
             .glassCard(cornerRadius: 66)
             .accessibilityHidden(true)
 
-            VStack(spacing: 10) {
+            VStack(spacing: Theme.Spacing.md) {
                 Text("LiftCalm")
                     .font(.system(size: 40, weight: .bold, design: .rounded))
                 Text("Fast. Focused. Fair.")
@@ -39,8 +39,8 @@ struct OnboardingWelcomeStep: View {
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 8)
-                    .padding(.top, 4)
+                    .padding(.horizontal, Theme.Spacing.sm)
+                    .padding(.top, Theme.Spacing.xs)
             }
             Spacer()
             Spacer()
@@ -70,7 +70,7 @@ struct OnboardingExperienceStep: View {
             title: "Your experience",
             subtitle: "We'll tailor suggestions to your level."
         ) {
-            VStack(spacing: 12) {
+            VStack(spacing: Theme.Spacing.md) {
                 ForEach(ExperienceLevel.allCases) { level in
                     OnboardingChoiceCard(
                         title: level.displayName,
@@ -113,7 +113,7 @@ struct OnboardingGoalStep: View {
             title: "Main goal",
             subtitle: "This sets your default rest timer — change it anytime."
         ) {
-            VStack(spacing: 12) {
+            VStack(spacing: Theme.Spacing.md) {
                 ForEach(TrainingGoal.allCases) { goal in
                     OnboardingChoiceCard(
                         title: goal.displayName,
@@ -139,7 +139,7 @@ struct OnboardingUnitsStep: View {
             title: "Preferred units",
             subtitle: "How would you like to enter weights?"
         ) {
-            VStack(spacing: 12) {
+            VStack(spacing: Theme.Spacing.md) {
                 ForEach(WeightUnit.allCases) { unit in
                     OnboardingChoiceCard(
                         title: unit.displayName,
@@ -166,7 +166,7 @@ struct OnboardingReadyStep: View {
             title: "You're all set",
             subtitle: "Here's your starting point."
         ) {
-            VStack(spacing: 16) {
+            VStack(spacing: Theme.Spacing.lg) {
                 summaryCard
                 templatesCard
                 disclaimer
@@ -182,12 +182,12 @@ struct OnboardingReadyStep: View {
             Divider().padding(.leading, 52)
             summaryRow("Units", unit.abbreviation.uppercased(), "scalemass")
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
         .glassCard()
     }
 
     private func summaryRow(_ label: String, _ value: String, _ symbol: String) -> some View {
-        HStack(spacing: 14) {
+        HStack(spacing: Theme.Spacing.md) {
             Image(systemName: symbol)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 24)
@@ -197,14 +197,14 @@ struct OnboardingReadyStep: View {
             Text(value)
                 .foregroundStyle(.secondary)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, Theme.Spacing.lg)
+        .padding(.vertical, Theme.Spacing.md)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(label): \(value)")
     }
 
     private var templatesCard: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: Theme.Spacing.md) {
             Image(systemName: "sparkles")
                 .font(.title2)
                 .foregroundStyle(Theme.calmBlue)
@@ -214,7 +214,7 @@ struct OnboardingReadyStep: View {
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
-        .padding(16)
+        .padding(Theme.Spacing.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard()
     }
@@ -227,6 +227,6 @@ struct OnboardingReadyStep: View {
         }
         .font(.footnote)
         .foregroundStyle(.secondary)
-        .padding(.top, 4)
+        .padding(.top, Theme.Spacing.xs)
     }
 }

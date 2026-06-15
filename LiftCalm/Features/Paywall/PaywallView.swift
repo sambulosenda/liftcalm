@@ -41,13 +41,13 @@ struct PaywallView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
                     header
                     benefitsCard
                     comingSoonCard
                     reassurance
                 }
-                .padding(20)
+                .padding(Theme.Spacing.lg)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .safeAreaInset(edge: .bottom) { purchaseBar }
@@ -76,12 +76,12 @@ struct PaywallView: View {
     // MARK: - Sections
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             Image(systemName: "dumbbell.fill")
                 .font(.system(size: 40, weight: .semibold))
                 .foregroundStyle(Theme.accent)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                 Text(context.headline)
                     .font(.title.weight(.bold))
                     .fixedSize(horizontal: false, vertical: true)
@@ -91,7 +91,7 @@ struct PaywallView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(.top, 4)
+        .padding(.top, Theme.Spacing.xs)
     }
 
     private var benefitsCard: some View {
@@ -101,12 +101,12 @@ struct PaywallView: View {
                 BenefitRow(benefit: benefit, tint: Theme.accent)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
         .glassCard()
     }
 
     private var comingSoonCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
             SectionHeader("Coming to Plus", subtitle: "Included with the same one-time unlock")
             VStack(spacing: 0) {
                 ForEach(Array(comingSoon.enumerated()), id: \.element.id) { index, benefit in
@@ -114,7 +114,7 @@ struct PaywallView: View {
                     BenefitRow(benefit: benefit, tint: Theme.calmBlue, muted: true)
                 }
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, Theme.Spacing.xs)
             .glassCard()
         }
     }
@@ -132,7 +132,7 @@ struct PaywallView: View {
     // MARK: - Purchase bar
 
     private var purchaseBar: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: Theme.Spacing.md) {
             Button(action: { Task { await store.purchase() } }) {
                 Group {
                     if isBusy {
@@ -157,9 +157,9 @@ struct PaywallView: View {
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 12)
-        .padding(.bottom, 8)
+        .padding(.horizontal, Theme.Spacing.lg)
+        .padding(.top, Theme.Spacing.md)
+        .padding(.bottom, Theme.Spacing.sm)
         .background(.bar)
     }
 
@@ -216,14 +216,14 @@ private struct BenefitRow: View {
     var muted: Bool = false
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: Theme.Spacing.md) {
             Image(systemName: benefit.symbol)
                 .font(.title3)
                 .foregroundStyle(muted ? AnyShapeStyle(.secondary) : AnyShapeStyle(tint))
                 .frame(width: 42, height: 42)
                 .background(tint.opacity(muted ? 0.06 : 0.12), in: .circle)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(benefit.title)
                     .font(.headline)
                 Text(benefit.detail)
@@ -233,8 +233,8 @@ private struct BenefitRow: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, Theme.Spacing.lg)
+        .padding(.vertical, Theme.Spacing.md)
         .accessibilityElement(children: .combine)
     }
 }

@@ -31,12 +31,12 @@ struct SessionSummaryHeader: View {
             stat(value: "\(workout.completedSetCount)", label: "Sets")
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 14)
+        .padding(.vertical, Theme.Spacing.md)
         .glassCard()
     }
 
     private func stat(value: String, label: String) -> some View {
-        VStack(spacing: 3) {
+        VStack(spacing: Theme.Spacing.xs) {
             Text(value)
                 .font(.headline.monospacedDigit())
             Text(label)
@@ -58,7 +58,7 @@ struct ExerciseSectionHeader: View {
 
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(entry.exercise?.name ?? "Exercise")
                     .font(.headline)
                     .textCase(nil)

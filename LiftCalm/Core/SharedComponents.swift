@@ -18,7 +18,7 @@ struct SectionHeader: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             Text(title)
                 .font(.title3.weight(.semibold))
             if let subtitle {
@@ -37,11 +37,11 @@ struct WorkoutRow: View {
     @Environment(AppSettings.self) private var settings
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: Theme.Spacing.md) {
             Image(systemName: "checkmark.seal.fill")
                 .font(.title2)
                 .foregroundStyle(Theme.success)
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(workout.templateName ?? "Workout")
                     .font(.headline)
                 Text(workout.startedAt, format: .dateTime.weekday().month().day())
@@ -49,7 +49,7 @@ struct WorkoutRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            VStack(alignment: .trailing, spacing: 3) {
+            VStack(alignment: .trailing, spacing: Theme.Spacing.xs) {
                 Text(Formatting.volume(workout.totalVolume, unit: settings.weightUnit))
                     .font(.subheadline.weight(.semibold))
                     .monospacedDigit()
@@ -58,7 +58,7 @@ struct WorkoutRow: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(16)
+        .padding(Theme.Spacing.lg)
         .glassCard()
         .accessibilityElement(children: .combine)
     }

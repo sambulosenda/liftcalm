@@ -93,8 +93,8 @@ private struct HistoryRow: View {
     @Environment(AppSettings.self) private var settings
 
     var body: some View {
-        HStack(spacing: 14) {
-            VStack(spacing: 1) {
+        HStack(spacing: Theme.Spacing.md) {
+            VStack(spacing: Theme.Spacing.xs) {
                 Text(workout.startedAt, format: .dateTime.day())
                     .font(.headline.monospacedDigit())
                 Text(workout.startedAt, format: .dateTime.month(.abbreviated))
@@ -103,10 +103,10 @@ private struct HistoryRow: View {
             }
             .frame(width: 40)
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(workout.templateName ?? "Workout")
                     .font(.headline)
-                HStack(spacing: 8) {
+                HStack(spacing: Theme.Spacing.sm) {
                     Label("\(workout.exerciseCount)", systemImage: "list.bullet")
                     Label("\(workout.completedSetCount)", systemImage: "checkmark")
                     if let duration = workout.duration {
@@ -122,7 +122,7 @@ private struct HistoryRow: View {
                 .monospacedDigit()
                 .foregroundStyle(Theme.accent)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
         .accessibilityElement(children: .combine)
     }
 }

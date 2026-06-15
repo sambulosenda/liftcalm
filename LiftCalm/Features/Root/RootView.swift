@@ -66,10 +66,10 @@ private struct NowTrainingAccessory: View {
 
     var body: some View {
         Button(action: resume) {
-            HStack(spacing: 10) {
+            HStack(spacing: Theme.Spacing.md) {
                 Image(systemName: "dumbbell.fill")
                     .foregroundStyle(Theme.accent)
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     Text("Now training")
                         .font(.subheadline.weight(.semibold))
                     if let workout = session.activeWorkout {
@@ -87,7 +87,7 @@ private struct NowTrainingAccessory: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, Theme.Spacing.md)
             .contentShape(.rect)
         }
         .buttonStyle(.plain)

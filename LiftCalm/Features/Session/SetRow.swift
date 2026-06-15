@@ -24,7 +24,7 @@ struct SetRow: View {
     @Environment(SessionController.self) private var session
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Theme.Spacing.sm) {
             setBadge
 
             numberField(
@@ -47,7 +47,7 @@ struct SetRow: View {
 
             completeButton
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, Theme.Spacing.xs)
         .opacity(set.isCompleted ? 0.9 : 1)
         .listRowBackground(set.isCompleted ? Theme.success.opacity(0.08) : Color.clear)
     }
@@ -79,7 +79,7 @@ struct SetRow: View {
         .font(.body.monospacedDigit())
         .focused(focus, equals: field)
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
+        .padding(.vertical, Theme.Spacing.sm)
         .background(.quaternary.opacity(0.5), in: .rect(cornerRadius: 10))
         .submitLabel(decimal ? .next : .done)
         .onSubmit { advanceFocus(from: field) }

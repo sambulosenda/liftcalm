@@ -57,12 +57,12 @@ struct WorkoutDetailView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 14)
+        .padding(.vertical, Theme.Spacing.md)
         .glassCard()
     }
 
     private func metric(_ label: String, _ value: String) -> some View {
-        VStack(spacing: 3) {
+        VStack(spacing: Theme.Spacing.xs) {
             Text(value).font(.headline.monospacedDigit())
             Text(label).font(.caption).foregroundStyle(.secondary)
         }
@@ -81,10 +81,10 @@ private struct MuscleBalanceView: View {
     private let order: [MuscleGroup.Region] = [.upper, .lower, .core]
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: Theme.Spacing.md) {
             ForEach(order, id: \.self) { region in
                 if let value = volumeByRegion[region], value > 0 {
-                    HStack(spacing: 10) {
+                    HStack(spacing: Theme.Spacing.md) {
                         Text(region.rawValue.capitalized)
                             .font(.subheadline)
                             .frame(width: 64, alignment: .leading)

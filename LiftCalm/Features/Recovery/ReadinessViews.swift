@@ -67,9 +67,9 @@ struct ReadinessCard: View {
     }
 
     private func glance(locked: Bool) -> some View {
-        HStack(spacing: 16) {
+        HStack(spacing: Theme.Spacing.lg) {
             ReadinessRing(value: score.value, band: score.band)
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(score.band.label)
                     .font(.headline)
                     .foregroundStyle(score.band.tint)
@@ -84,7 +84,7 @@ struct ReadinessCard: View {
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(.tertiary)
         }
-        .padding(16)
+        .padding(Theme.Spacing.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard()
     }
@@ -96,7 +96,7 @@ struct RecoveryView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: Theme.Spacing.xl) {
                 header
                 factorsCard
                 if score.isTrainingOnly {
@@ -104,7 +104,7 @@ struct RecoveryView: View {
                 }
                 disclaimer
             }
-            .padding(20)
+            .padding(Theme.Spacing.lg)
         }
         .navigationTitle("Readiness")
         .navigationBarTitleDisplayMode(.inline)
@@ -116,7 +116,7 @@ struct RecoveryView: View {
     }
 
     private var header: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: Theme.Spacing.md) {
             ReadinessRing(value: score.value, band: score.band, diameter: 132, lineWidth: 12)
             Label(score.band.label, systemImage: score.band.symbol)
                 .font(.title2.weight(.bold))
@@ -127,7 +127,7 @@ struct RecoveryView: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 8)
+        .padding(.top, Theme.Spacing.sm)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Readiness \(score.value) of 100, \(score.band.label). \(score.suggestion)")
     }
@@ -135,16 +135,16 @@ struct RecoveryView: View {
     private var factorsCard: some View {
         VStack(spacing: 0) {
             ForEach(Array(score.components.enumerated()), id: \.element.id) { index, component in
-                if index > 0 { Divider().padding(.leading, 16) }
+                if index > 0 { Divider().padding(.leading, Theme.Spacing.lg) }
                 FactorRow(component: component)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
         .glassCard()
     }
 
     private var enrichmentNote: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Theme.Spacing.md) {
             Image(systemName: "heart.text.square")
                 .font(.title2)
                 .foregroundStyle(Theme.calmBlue)
@@ -155,7 +155,7 @@ struct RecoveryView: View {
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
-        .padding(16)
+        .padding(Theme.Spacing.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard()
     }
@@ -171,8 +171,8 @@ private struct FactorRow: View {
     let component: ReadinessComponent
 
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
+        HStack(spacing: Theme.Spacing.md) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(component.label)
                     .font(.subheadline.weight(.medium))
                 Text(component.detail)
@@ -184,8 +184,8 @@ private struct FactorRow: View {
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(ReadinessBand(score: component.score).tint)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, Theme.Spacing.lg)
+        .padding(.vertical, Theme.Spacing.md)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(component.label), \(component.detail), \(component.score) of 100")
     }

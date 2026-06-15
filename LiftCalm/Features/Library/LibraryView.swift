@@ -56,8 +56,8 @@ struct LibraryView: View {
             ForEach(LibraryTab.allCases) { Text($0.title).tag($0) }
         }
         .pickerStyle(.segmented)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
+        .padding(.horizontal, Theme.Spacing.lg)
+        .padding(.vertical, Theme.Spacing.sm)
         .background(.bar)
     }
 
@@ -186,13 +186,13 @@ private struct RoutineRow: View {
     private var exerciseCount: Int { template.items.count }
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Theme.Spacing.md) {
             Image(systemName: "list.bullet.rectangle.portrait")
                 .font(.body)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 34, height: 34)
                 .background(Theme.accent.opacity(0.12), in: .circle)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(template.name)
                     .font(.body)
                 if !template.summary.isEmpty {
@@ -213,7 +213,7 @@ private struct RoutineRow: View {
             }
         }
         .contentShape(.rect)
-        .padding(.vertical, 2)
+        .padding(.vertical, Theme.Spacing.xs)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(template.name), \(exerciseCount) exercises")
         .accessibilityHint(isCustom ? "Edit this routine" : "")

@@ -84,7 +84,7 @@ struct ActiveWorkoutView: View {
                 Label("Add Exercise", systemImage: "plus.circle.fill")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 6)
+                    .padding(.vertical, Theme.Spacing.sm)
             }
             .listRowBackground(Color.clear)
         }
@@ -191,7 +191,7 @@ private struct ColumnLabels: View {
     let unit: WeightUnit
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Theme.Spacing.sm) {
             Text("SET").frame(width: 26)
             Text(unit.abbreviation.uppercased()).frame(maxWidth: .infinity)
             Text("REPS").frame(maxWidth: .infinity)

@@ -16,8 +16,8 @@ struct OnboardingStepScaffold<Content: View>: View {
     @ViewBuilder var content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
                 Text(title)
                     .font(.largeTitle.weight(.bold))
                     .accessibilityAddTraits(.isHeader)
@@ -45,7 +45,7 @@ struct OnboardingChoiceCard: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 16) {
+            HStack(spacing: Theme.Spacing.lg) {
                 if let systemImage {
                     Image(systemName: systemImage)
                         .font(.system(size: iconSize))
@@ -53,7 +53,7 @@ struct OnboardingChoiceCard: View {
                         .frame(width: iconSize + 12)
                         .accessibilityHidden(true)
                 }
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     Text(title)
                         .font(.headline)
                         .foregroundStyle(.primary)
@@ -71,7 +71,7 @@ struct OnboardingChoiceCard: View {
                     .contentTransition(.symbolEffect(.replace))
                     .accessibilityHidden(true)
             }
-            .padding(16)
+            .padding(Theme.Spacing.lg)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {
                 RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous)
@@ -95,7 +95,7 @@ struct OnboardingProgress: View {
     let total: Int
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: Theme.Spacing.sm) {
             ForEach(0..<total, id: \.self) { index in
                 Capsule()
                     .fill(index <= current ? AnyShapeStyle(Theme.accent) : AnyShapeStyle(.quaternary))

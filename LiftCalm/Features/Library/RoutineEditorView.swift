@@ -157,7 +157,7 @@ private struct DraftItemRow: View {
 
     var body: some View {
         Stepper(value: $item.targetSets, in: 1...10) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(item.exercise.name)
                     .font(.body)
                 Text("\(item.exercise.muscleGroup.displayName) · \(setsLabel)")
