@@ -68,22 +68,16 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4FCF5E6D2FDF45700008A78F /* LiftCalm */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = LiftCalm;
 			sourceTree = "<group>";
 		};
 		4FCF5E7B2FDF45710008A78F /* LiftCalmTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = LiftCalmTests;
 			sourceTree = "<group>";
 		};
 		4FCF5E852FDF45710008A78F /* LiftCalmUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = LiftCalmUITests;
 			sourceTree = "<group>";
 		};
@@ -131,7 +125,6 @@
 				96C84B7989160AB690567964 /* Info.plist */,
 				20830837C4485B0CF2ACFA42 /* LiftCalmWidget.entitlements */,
 			);
-			name = LiftCalmWidget;
 			path = LiftCalmWidget;
 			sourceTree = "<group>";
 		};
