@@ -198,7 +198,7 @@ enum PaywallContext: String, Identifiable, Hashable, CaseIterable {
         case .readiness: "See the full picture"
         case .charts: "See your strength climb"
         case .sync: "Sync across your devices"
-        case .generic: "Unlock LiftCalm Plus"
+        case .generic: "Go further with every session"
         }
     }
 

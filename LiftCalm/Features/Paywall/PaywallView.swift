@@ -120,10 +120,20 @@ struct PaywallView: View {
     }
 
     private var reassurance: some View {
-        Label(
-            "Logging, your full history, and data export are always free. Plus is a one-time purchase — no subscription.",
-            systemImage: "checkmark.shield"
-        )
+        VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+            Label(
+                "Pay once, keep it forever — no subscription. Many trackers cost about that every month.",
+                systemImage: "infinity"
+            )
+            Label(
+                "Logging, your full history, and data export are always free.",
+                systemImage: "checkmark.shield"
+            )
+            Label(
+                "No account needed — your data stays on your device.",
+                systemImage: "lock.shield"
+            )
+        }
         .font(.footnote)
         .foregroundStyle(.secondary)
         .fixedSize(horizontal: false, vertical: true)
@@ -153,7 +163,7 @@ struct PaywallView: View {
                 .font(.subheadline)
                 .disabled(isBusy)
 
-            Text("Lifetime access · one-time purchase")
+            Text("One-time purchase · no subscription, ever")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
