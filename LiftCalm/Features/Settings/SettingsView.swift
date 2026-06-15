@@ -33,6 +33,7 @@ struct SettingsView: View {
                 }
 
                 plusSection
+                syncSection
 
                 Section {
                     Stepper(
@@ -151,6 +152,36 @@ struct SettingsView: View {
                 Text("Thanks for supporting LiftCalm. Every Plus feature is yours.")
             } else {
                 Text("Unlimited routines, the full recovery breakdown, and more — a one-time unlock.")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var syncSection: some View {
+        @Bindable var settings = settings
+        Section {
+            if store.isPlus {
+                Toggle("iCloud Sync", isOn: $settings.iCloudSyncEnabled)
+            } else {
+                Button {
+                    presentPaywall(.sync)
+                } label: {
+                    HStack {
+                        Label("iCloud Sync", systemImage: "icloud")
+                        Spacer()
+                        Image(systemName: "lock.fill").foregroundStyle(.tertiary)
+                    }
+                }
+            }
+        } header: {
+            Text("Sync")
+        } footer: {
+            if store.isPlus {
+                Text(settings.iCloudSyncEnabled
+                    ? "Your training syncs across your devices with iCloud. Quit and reopen LiftCalm to apply."
+                    : "Sync your training across your devices with iCloud. Quit and reopen to apply.")
+            } else {
+                Text("Sync your training across all your devices with iCloud — a Plus feature.")
             }
         }
     }

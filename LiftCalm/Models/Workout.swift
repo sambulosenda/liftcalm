@@ -14,18 +14,20 @@ import SwiftData
 
 @Model
 final class Workout {
-    @Attribute(.unique) var id: UUID
+    // No `.unique` — CloudKit forbids unique constraints. Non-optional stored
+    // properties carry defaults (also a CloudKit requirement).
+    var id: UUID = UUID()
     /// When the session began. Also the date used for history grouping.
-    var startedAt: Date
+    var startedAt: Date = Date()
     /// Set when the user finishes. `nil` means the session is still active.
     var endedAt: Date?
-    var notes: String
+    var notes: String = ""
     var energyRaw: Int?
     /// Name carried over from the template the session started from, if any.
     var templateName: String?
 
     @Relationship(deleteRule: .cascade, inverse: \ExerciseEntry.workout)
-    var entries: [ExerciseEntry]
+    var entries: [ExerciseEntry] = []
 
     init(
         id: UUID = UUID(),
@@ -61,20 +63,20 @@ final class Workout {
 
 @Model
 final class ExerciseEntry {
-    @Attribute(.unique) var id: UUID
+    var id: UUID = UUID()
     /// Position within the workout.
-    var order: Int
-    var notes: String
+    var order: Int = 0
+    var notes: String = ""
 
-    /// The library movement being performed. Nullify (not cascade) on delete so
-    /// deleting an exercise from the library doesn't erase logged history.
-    @Relationship(deleteRule: .nullify)
+    /// The library movement being performed. The nullify delete rule lives on the
+    /// inverse (`Exercise.loggedEntries`) so deleting a library exercise preserves
+    /// logged history.
     var exercise: Exercise?
 
     var workout: Workout?
 
     @Relationship(deleteRule: .cascade, inverse: \SetEntry.entry)
-    var sets: [SetEntry]
+    var sets: [SetEntry] = []
 
     init(
         id: UUID = UUID(),
@@ -97,16 +99,16 @@ final class ExerciseEntry {
 
 @Model
 final class SetEntry {
-    @Attribute(.unique) var id: UUID
-    var order: Int
+    var id: UUID = UUID()
+    var order: Int = 0
     /// Canonical load in kilograms. Convert at the UI boundary for display/entry.
-    var weightKilograms: Double
-    var reps: Int
+    var weightKilograms: Double = 0
+    var reps: Int = 0
     /// Rate of perceived exertion, 1–10. Optional — many sets won't record it.
     var rpe: Double?
     /// Logged sets count toward volume/PRs; planned-but-unfinished sets don't.
-    var isCompleted: Bool
-    var isWarmup: Bool
+    var isCompleted: Bool = false
+    var isWarmup: Bool = false
 
     var entry: ExerciseEntry?
 

@@ -20,13 +20,9 @@ struct LiftCalmApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
-        do {
-            modelContainer = try ModelContainer(
-                for: Workout.self, Exercise.self, WorkoutTemplate.self
-            )
-        } catch {
-            fatalError("Failed to create ModelContainer: \(error)")
-        }
+        // Local store by default; iCloud (CloudKit) when the user enabled sync and
+        // Plus is unlocked. Falls back to local if the cloud store can't be created.
+        modelContainer = PersistenceController.makeContainer()
     }
 
     var body: some Scene {

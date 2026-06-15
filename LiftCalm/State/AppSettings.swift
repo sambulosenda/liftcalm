@@ -14,6 +14,10 @@ import SwiftUI
 @MainActor
 final class AppSettings {
 
+    /// UserDefaults key for the iCloud-sync preference. Shared with
+    /// `PersistenceController`, which reads it at launch to configure the store.
+    static let iCloudSyncKey = "settings.iCloudSyncEnabled"
+
     var weightUnit: WeightUnit { didSet { store(weightUnit.rawValue, .weightUnit) } }
     var experienceLevel: ExperienceLevel { didSet { store(experienceLevel.rawValue, .experience) } }
     var goal: TrainingGoal { didSet { store(goal.rawValue, .goal); syncRestToGoal() } }
@@ -30,6 +34,9 @@ final class AppSettings {
     var reminderHour: Int { didSet { store(reminderHour, .reminderHour) } }
     var reminderMinute: Int { didSet { store(reminderMinute, .reminderMinute) } }
     var hasCompletedOnboarding: Bool { didSet { store(hasCompletedOnboarding, .onboarded) } }
+    /// iCloud (CloudKit) sync of the workout store. A Plus feature; applied at the
+    /// next launch, since the store configuration is fixed at startup.
+    var iCloudSyncEnabled: Bool { didSet { defaults.set(iCloudSyncEnabled, forKey: Self.iCloudSyncKey) } }
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -49,6 +56,7 @@ final class AppSettings {
         reminderHour = defaults.object(forKey: Key.reminderHour.rawValue) as? Int ?? 18
         reminderMinute = defaults.object(forKey: Key.reminderMinute.rawValue) as? Int ?? 0
         hasCompletedOnboarding = defaults.bool(forKey: Key.onboarded.rawValue)
+        iCloudSyncEnabled = defaults.object(forKey: Self.iCloudSyncKey) as? Bool ?? false
     }
 
     // MARK: - Persistence
