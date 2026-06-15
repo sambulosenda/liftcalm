@@ -185,9 +185,21 @@ private struct RoutineRow: View {
 
     private var exerciseCount: Int { template.items.count }
 
+    /// Built-in routines get a distinct glyph keyed off their name; custom
+    /// routines fall back to the generic list symbol.
+    private var symbolName: String {
+        switch template.name {
+        case "Push":      return "figure.strengthtraining.traditional"
+        case "Pull":      return "figure.rower"
+        case "Legs":      return "figure.strengthtraining.functional"
+        case "Full Body": return "figure.mixed.cardio"
+        default:          return "list.bullet.rectangle.portrait"
+        }
+    }
+
     var body: some View {
         HStack(spacing: Theme.Spacing.md) {
-            Image(systemName: "list.bullet.rectangle.portrait")
+            Image(systemName: symbolName)
                 .font(.body)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 34, height: 34)
