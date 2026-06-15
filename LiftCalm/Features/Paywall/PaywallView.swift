@@ -25,12 +25,12 @@ struct PaywallView: View {
     /// What Plus unlocks today.
     private let benefits: [Benefit] = [
         Benefit("infinity", "Unlimited routines", "Save as many custom routines as your training needs."),
+        Benefit("chart.xyaxis.line", "Progress charts", "Estimated 1RM and volume trends for every exercise."),
         Benefit("heart.text.square", "Full recovery breakdown", "See every factor behind your readiness score."),
     ]
 
     /// On the roadmap, included with the same one-time unlock.
     private let comingSoon: [Benefit] = [
-        Benefit("chart.xyaxis.line", "Progress charts", "1RM and volume trends over time."),
         Benefit("icloud", "iCloud sync", "Your training, on every device."),
         Benefit("square.grid.2x2", "Home Screen widgets", "Readiness and quick-start at a glance."),
         Benefit("applewatch", "Apple Watch app", "Log sets from your wrist."),

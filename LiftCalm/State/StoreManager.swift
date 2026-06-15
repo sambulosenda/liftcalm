@@ -30,7 +30,8 @@ final class StoreManager {
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private var updatesTask: Task<Void, Never>?
 
-    private static let cacheKey = "plus.entitlement.cached"
+    /// Also read by `WidgetBridge` to bake the Plus state into the widget snapshot.
+    static let cacheKey = "plus.entitlement.cached"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -185,6 +186,7 @@ enum PlusPolicy {
 enum PaywallContext: String, Identifiable, Hashable, CaseIterable {
     case routines
     case readiness
+    case charts
     case generic
 
     var id: String { rawValue }
@@ -193,6 +195,7 @@ enum PaywallContext: String, Identifiable, Hashable, CaseIterable {
         switch self {
         case .routines: "Build unlimited routines"
         case .readiness: "See the full picture"
+        case .charts: "See your strength climb"
         case .generic: "Unlock LiftCalm Plus"
         }
     }
@@ -203,6 +206,8 @@ enum PaywallContext: String, Identifiable, Hashable, CaseIterable {
             "You've reached the \(PlusPolicy.freeCustomRoutineLimit)-routine limit on the free plan. Plus lets you save as many as you like."
         case .readiness:
             "Plus reveals the full recovery breakdown behind your readiness score."
+        case .charts:
+            "Plus charts every lift's estimated 1RM and volume over time, so you can see what's working."
         case .generic:
             "A one-time unlock for the features that go deeper."
         }

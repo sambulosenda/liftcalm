@@ -27,6 +27,9 @@ struct RootView: View {
             Tab("History", systemImage: "clock.arrow.circlepath", value: AppTab.history) {
                 HistoryView()
             }
+            Tab("Progress", systemImage: "chart.xyaxis.line", value: AppTab.progress) {
+                ProgressDashboardView()
+            }
             Tab("Library", systemImage: "books.vertical", value: AppTab.library) {
                 LibraryView()
             }
@@ -119,7 +122,7 @@ private struct RestPill: View {
 }
 
 private enum AppTab: Hashable {
-    case today, history, library, settings
+    case today, history, progress, library, settings
 }
 
 private extension View {
