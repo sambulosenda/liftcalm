@@ -14,14 +14,24 @@ import SwiftUI
 import UIKit
 
 enum Theme {
+    /// Raw brand hex pairs `(light, dark)` — the single source for both the
+    /// SwiftUI tokens below and the widget snapshot (which bakes resolved hex so
+    /// the extension needs zero app code). `0xRRGGBB`.
+    enum Hex {
+        static let accent: (light: UInt32, dark: UInt32) = (0x277552, 0x5CB897)
+        static let calmBlue: (light: UInt32, dark: UInt32) = (0x34699A, 0x6FA0C7)
+        static let success: (light: UInt32, dark: UInt32) = (0x2E7D4F, 0x5CBA85)
+        static let caution: (light: UInt32, dark: UInt32) = (0x8A5E10, 0xE0A95C)
+    }
+
     /// Primary brand accent — a calm, grounded green. (L 5.0:1 · D 7.1:1)
-    static let accent = Color(light: 0x277552, dark: 0x5CB897)
+    static let accent = Color(light: Hex.accent.light, dark: Hex.accent.dark)
     /// Secondary accent — soft blue, used for recovery / informational cues. (L 5.2:1 · D 6.1:1)
-    static let calmBlue = Color(light: 0x34699A, dark: 0x6FA0C7)
+    static let calmBlue = Color(light: Hex.calmBlue.light, dark: Hex.calmBlue.dark)
     /// Positive / completion signal. (L 4.5:1 · D 7.1:1)
-    static let success = Color(light: 0x2E7D4F, dark: 0x5CBA85)
+    static let success = Color(light: Hex.success.light, dark: Hex.success.dark)
     /// Gentle warning (e.g. deload hints) — warm amber, never alarming red. (L 5.1:1 · D 8.1:1)
-    static let caution = Color(light: 0x8A5E10, dark: 0xE0A95C)
+    static let caution = Color(light: Hex.caution.light, dark: Hex.caution.dark)
 
     /// Standard corner radius for cards so glass/material surfaces stay consistent.
     static let cardCornerRadius: CGFloat = 20

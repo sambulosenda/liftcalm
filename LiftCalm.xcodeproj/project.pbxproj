@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1CBC4122D96D3046D1BD57E4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0888357D850B9F6D03CB96F3 /* Foundation.framework */; };
+		35DDF704DAA469256BBF92DE /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5716EE74CB0378ACC73A80 /* WidgetSnapshot.swift */; };
+		A4976926AA8356CE7C7ABE98 /* ReadinessWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07BDD07232A0D9F76385BBA /* ReadinessWidget.swift */; };
+		BDF6A8E564589B962E0ACB49 /* LiftCalmWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 45606B766C022DD99CA42338 /* LiftCalmWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C47774A62D4EE250D187B527 /* LiftCalmWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70F393EF4EDF1A731AF66E2 /* LiftCalmWidgetBundle.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4FCF5E792FDF45710008A78F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,27 +29,61 @@
 			remoteGlobalIDString = 4FCF5E6A2FDF45700008A78F;
 			remoteInfo = LiftCalm;
 		};
+		DF2A89C46029B2EF5272A737 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FCF5E632FDF45700008A78F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3DBE125D3F2C9CC84815FC99;
+			remoteInfo = LiftCalmWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		5B1714994F6FCEF422E7FB72 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BDF6A8E564589B962E0ACB49 /* LiftCalmWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0888357D850B9F6D03CB96F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		20830837C4485B0CF2ACFA42 /* LiftCalmWidget.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = LiftCalmWidget.entitlements; sourceTree = "<group>"; };
+		45606B766C022DD99CA42338 /* LiftCalmWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LiftCalmWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FCF5E6B2FDF45700008A78F /* LiftCalm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiftCalm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FCF5E782FDF45710008A78F /* LiftCalmTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiftCalmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FCF5E822FDF45710008A78F /* LiftCalmUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiftCalmUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B5716EE74CB0378ACC73A80 /* WidgetSnapshot.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
+		96C84B7989160AB690567964 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B70F393EF4EDF1A731AF66E2 /* LiftCalmWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiftCalmWidgetBundle.swift; sourceTree = "<group>"; };
+		C07BDD07232A0D9F76385BBA /* ReadinessWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReadinessWidget.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4FCF5E6D2FDF45700008A78F /* LiftCalm */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = LiftCalm;
 			sourceTree = "<group>";
 		};
 		4FCF5E7B2FDF45710008A78F /* LiftCalmTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = LiftCalmTests;
 			sourceTree = "<group>";
 		};
 		4FCF5E852FDF45710008A78F /* LiftCalmUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = LiftCalmUITests;
 			sourceTree = "<group>";
 		};
@@ -69,9 +111,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C581AAAE2DC944FED398185A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CBC4122D96D3046D1BD57E4 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		32F1B0EDE729075A72ED3517 /* LiftCalmWidget */ = {
+			isa = PBXGroup;
+			children = (
+				B70F393EF4EDF1A731AF66E2 /* LiftCalmWidgetBundle.swift */,
+				C07BDD07232A0D9F76385BBA /* ReadinessWidget.swift */,
+				7B5716EE74CB0378ACC73A80 /* WidgetSnapshot.swift */,
+				96C84B7989160AB690567964 /* Info.plist */,
+				20830837C4485B0CF2ACFA42 /* LiftCalmWidget.entitlements */,
+			);
+			name = LiftCalmWidget;
+			path = LiftCalmWidget;
+			sourceTree = "<group>";
+		};
 		4FCF5E622FDF45700008A78F = {
 			isa = PBXGroup;
 			children = (
@@ -79,6 +142,8 @@
 				4FCF5E7B2FDF45710008A78F /* LiftCalmTests */,
 				4FCF5E852FDF45710008A78F /* LiftCalmUITests */,
 				4FCF5E6C2FDF45700008A78F /* Products */,
+				6A45CC230C2C76D03B2FAA64 /* Frameworks */,
+				32F1B0EDE729075A72ED3517 /* LiftCalmWidget */,
 			);
 			sourceTree = "<group>";
 		};
@@ -88,13 +153,47 @@
 				4FCF5E6B2FDF45700008A78F /* LiftCalm.app */,
 				4FCF5E782FDF45710008A78F /* LiftCalmTests.xctest */,
 				4FCF5E822FDF45710008A78F /* LiftCalmUITests.xctest */,
+				45606B766C022DD99CA42338 /* LiftCalmWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		5490D6D149D8A7C0FFC402CA /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				0888357D850B9F6D03CB96F3 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		6A45CC230C2C76D03B2FAA64 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5490D6D149D8A7C0FFC402CA /* iOS */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3DBE125D3F2C9CC84815FC99 /* LiftCalmWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F9B62643552216883402C25 /* Build configuration list for PBXNativeTarget "LiftCalmWidgetExtension" */;
+			buildPhases = (
+				778257320E2D9D676800B827 /* Sources */,
+				C581AAAE2DC944FED398185A /* Frameworks */,
+				CBE07E81267C10E3241161F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LiftCalmWidgetExtension;
+			productName = LiftCalmWidgetExtension;
+			productReference = 45606B766C022DD99CA42338 /* LiftCalmWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		4FCF5E6A2FDF45700008A78F /* LiftCalm */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4FCF5E8C2FDF45710008A78F /* Build configuration list for PBXNativeTarget "LiftCalm" */;
@@ -102,17 +201,17 @@
 				4FCF5E672FDF45700008A78F /* Sources */,
 				4FCF5E682FDF45700008A78F /* Frameworks */,
 				4FCF5E692FDF45700008A78F /* Resources */,
+				5B1714994F6FCEF422E7FB72 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8D9C4C742B2A86CF8F1B8956 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				4FCF5E6D2FDF45700008A78F /* LiftCalm */,
 			);
 			name = LiftCalm;
-			packageProductDependencies = (
-			);
 			productName = LiftCalm;
 			productReference = 4FCF5E6B2FDF45700008A78F /* LiftCalm.app */;
 			productType = "com.apple.product-type.application";
@@ -134,8 +233,6 @@
 				4FCF5E7B2FDF45710008A78F /* LiftCalmTests */,
 			);
 			name = LiftCalmTests;
-			packageProductDependencies = (
-			);
 			productName = LiftCalmTests;
 			productReference = 4FCF5E782FDF45710008A78F /* LiftCalmTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -157,8 +254,6 @@
 				4FCF5E852FDF45710008A78F /* LiftCalmUITests */,
 			);
 			name = LiftCalmUITests;
-			packageProductDependencies = (
-			);
 			productName = LiftCalmUITests;
 			productReference = 4FCF5E822FDF45710008A78F /* LiftCalmUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -203,6 +298,7 @@
 				4FCF5E6A2FDF45700008A78F /* LiftCalm */,
 				4FCF5E772FDF45710008A78F /* LiftCalmTests */,
 				4FCF5E812FDF45710008A78F /* LiftCalmUITests */,
+				3DBE125D3F2C9CC84815FC99 /* LiftCalmWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -223,6 +319,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4FCF5E802FDF45710008A78F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CBE07E81267C10E3241161F8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,6 +356,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		778257320E2D9D676800B827 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C47774A62D4EE250D187B527 /* LiftCalmWidgetBundle.swift in Sources */,
+				A4976926AA8356CE7C7ABE98 /* ReadinessWidget.swift in Sources */,
+				35DDF704DAA469256BBF92DE /* WidgetSnapshot.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -265,6 +378,12 @@
 			isa = PBXTargetDependency;
 			target = 4FCF5E6A2FDF45700008A78F /* LiftCalm */;
 			targetProxy = 4FCF5E832FDF45710008A78F /* PBXContainerItemProxy */;
+		};
+		8D9C4C742B2A86CF8F1B8956 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = LiftCalmWidgetExtension;
+			target = 3DBE125D3F2C9CC84815FC99 /* LiftCalmWidgetExtension */;
+			targetProxy = DF2A89C46029B2EF5272A737 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -395,6 +514,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiftCalm/LiftCalm.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Y53KNKBDS8;
@@ -427,6 +547,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiftCalm/LiftCalm.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Y53KNKBDS8;
@@ -538,6 +659,71 @@
 			};
 			name = Release;
 		};
+		7D313257C704CB279B958752 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = LiftCalmWidget/LiftCalmWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y53KNKBDS8;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LiftCalmWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LiftCalm;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sambulosendas1.LiftCalm.LiftCalmWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D8D662C0B1A1609CA0DA0824 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = LiftCalmWidget/LiftCalmWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y53KNKBDS8;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LiftCalmWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LiftCalm;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sambulosendas1.LiftCalm.LiftCalmWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -573,6 +759,15 @@
 			buildConfigurations = (
 				4FCF5E932FDF45710008A78F /* Debug */,
 				4FCF5E942FDF45710008A78F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F9B62643552216883402C25 /* Build configuration list for PBXNativeTarget "LiftCalmWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8D662C0B1A1609CA0DA0824 /* Release */,
+				7D313257C704CB279B958752 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

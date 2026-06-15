@@ -17,6 +17,7 @@ struct LiftCalmApp: App {
     @State private var session = SessionController()
     @State private var notifications = NotificationManager()
     @State private var store = StoreManager()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         do {
@@ -45,6 +46,19 @@ struct LiftCalmApp: App {
                     // Load the Plus product, reconcile the entitlement, and begin
                     // listening for transaction updates.
                     await store.start()
+                    // Publish the first Home Screen widget snapshot now that data and
+                    // the entitlement are settled.
+                    WidgetBridge.refresh(context: context)
+                }
+                // Keep the widget current: when Plus unlocks/locks, and whenever we
+                // return to the foreground (covers finishes, time drift, edits).
+                .onChange(of: store.isPlus) {
+                    WidgetBridge.refresh(context: modelContainer.mainContext)
+                }
+                .onChange(of: scenePhase) { _, phase in
+                    if phase == .active {
+                        WidgetBridge.refresh(context: modelContainer.mainContext)
+                    }
                 }
         }
         .modelContainer(modelContainer)

@@ -15,6 +15,7 @@ struct ActiveWorkoutView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var modelContext
 
     @FocusState private var focus: SetField?
     @State private var showingPicker = false
@@ -175,6 +176,8 @@ struct ActiveWorkoutView: View {
     private func finish() {
         focus = nil
         session.finishWorkout()
+        // A finished session changes readiness/recent activity — refresh the widget.
+        WidgetBridge.refresh(context: modelContext)
         dismiss()
     }
 
