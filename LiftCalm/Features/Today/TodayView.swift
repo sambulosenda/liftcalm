@@ -30,6 +30,16 @@ struct TodayView: View {
         ReadinessEngine.compute(load: TrainingLoad.from(workouts: finishedWorkouts, now: Date()))
     }
 
+    /// Time-of-day greeting — a small moment of warmth that frames the screen
+    /// (identity) before the readiness glance (status) and the start action.
+    private var greeting: String {
+        switch Calendar.current.component(.hour, from: Date()) {
+        case 5..<12: "Good morning"
+        case 12..<17: "Good afternoon"
+        default: "Good evening"
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -42,7 +52,7 @@ struct TodayView: View {
                 .padding(Theme.Spacing.lg)
             }
             .scrollEdgeEffectStyle(.soft, for: .top)
-            .navigationTitle("Today")
+            .navigationTitle(greeting)
             .background(backgroundTint)
         }
     }
