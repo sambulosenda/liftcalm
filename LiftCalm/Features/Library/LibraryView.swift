@@ -20,11 +20,9 @@ struct LibraryView: View {
 
     @State private var tab: LibraryTab = .exercises
     @State private var searchText = ""
-    @State private var showingCreateExercise = false
-    @State private var creatingRoutine = false
-    @State private var generatingRoutine = false
+    @State private var activeSheet: ActiveSheet?
     @State private var pendingManual = false
-    @State private var editingRoutine: WorkoutTemplate?
+    @State private var aiAvailable = false
 
     var body: some View {
         NavigationStack {
@@ -41,25 +39,22 @@ struct LibraryView: View {
                     Button(addTitle, systemImage: "plus") { add() }
                 }
             }
-            .sheet(isPresented: $showingCreateExercise) {
-                AddExerciseView()
-            }
-            .sheet(isPresented: $creatingRoutine) {
-                RoutineEditorView()
-            }
-            .sheet(isPresented: $generatingRoutine, onDismiss: {
-                // Hand off to the manual editor if the user chose that escape hatch
-                // (presenting only after this sheet has fully dismissed avoids a race).
+            .sheet(item: $activeSheet, onDismiss: {
+                // If the user chose "build manually" from the AI sheet, present the
+                // editor only after this sheet has fully dismissed (avoids a race).
                 if pendingManual {
                     pendingManual = false
-                    creatingRoutine = true
+                    activeSheet = .createRoutine
                 }
-            }) {
-                RoutineWizardView(onManual: { pendingManual = true })
+            }) { sheet in
+                switch sheet {
+                case .createExercise:     AddExerciseView()
+                case .createRoutine:      RoutineEditorView()
+                case .generateRoutine:    RoutineWizardView(onManual: { pendingManual = true })
+                case .editRoutine(let r): RoutineEditorView(routine: r)
+                }
             }
-            .sheet(item: $editingRoutine) { routine in
-                RoutineEditorView(routine: routine)
-            }
+            .onAppear { aiAvailable = Self.canOfferAI }
         }
     }
 
@@ -132,7 +127,7 @@ struct LibraryView: View {
                 Section {
                     ForEach(customTemplates) { template in
                         Button {
-                            editingRoutine = template
+                            activeSheet = .editRoutine(template)
                         } label: {
                             RoutineRow(template: template, isCustom: true)
                         }
@@ -194,10 +189,12 @@ struct LibraryView: View {
 
     private var addTitle: String { tab == .exercises ? "Add Exercise" : "Add Routine" }
 
-    /// Hide the AI option entirely on hardware that can never run the on-device
-    /// model; transient states (downloading / Apple Intelligence off) still show
-    /// it so the wizard can guide the user to fix them.
-    private var aiAvailable: Bool {
+    /// Resolved once in `onAppear` (cached in `aiAvailable`) rather than read in
+    /// `body`, so we don't call into the model framework on every re-evaluation.
+    /// Hidden on hardware that can never run the model; transient states
+    /// (downloading / Apple Intelligence off) still show it so the wizard can
+    /// guide the user to fix them.
+    private static var canOfferAI: Bool {
         switch RoutineWizardService.availability {
         case .deviceNotEligible, .unavailable: false
         default: true
@@ -207,10 +204,10 @@ struct LibraryView: View {
     private func add() {
         switch tab {
         case .exercises:
-            showingCreateExercise = true
+            activeSheet = .createExercise
         case .routines:
             if PlusPolicy.canCreateCustomRoutine(currentCount: customTemplates.count, isPlus: store.isPlus) {
-                creatingRoutine = true
+                activeSheet = .createRoutine
             } else {
                 presentPaywall(.routines)
             }
@@ -221,7 +218,7 @@ struct LibraryView: View {
     /// cap as manual creation.
     private func startAIGeneration() {
         if PlusPolicy.canCreateCustomRoutine(currentCount: customTemplates.count, isPlus: store.isPlus) {
-            generatingRoutine = true
+            activeSheet = .generateRoutine
         } else {
             presentPaywall(.routines)
         }
@@ -243,6 +240,24 @@ private enum LibraryTab: String, CaseIterable, Identifiable {
     case exercises, routines
     var id: String { rawValue }
     var title: String { rawValue.capitalized }
+}
+
+/// Single source of truth for which sheet is presented, replacing several
+/// boolean flags (see sheet-navigation guidance — enum + `.sheet(item:)`).
+private enum ActiveSheet: Identifiable {
+    case createExercise
+    case createRoutine
+    case generateRoutine
+    case editRoutine(WorkoutTemplate)
+
+    var id: String {
+        switch self {
+        case .createExercise:     "createExercise"
+        case .createRoutine:      "createRoutine"
+        case .generateRoutine:    "generateRoutine"
+        case .editRoutine(let t): "editRoutine-\(t.id)"
+        }
+    }
 }
 
 private struct RoutineRow: View {

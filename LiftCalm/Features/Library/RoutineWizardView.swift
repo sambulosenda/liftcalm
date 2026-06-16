@@ -127,7 +127,6 @@ struct RoutineWizardView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.glassProminentCompat)
-                .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             } footer: {
                 Label("Runs entirely on your device. Nothing is sent to the internet.",
