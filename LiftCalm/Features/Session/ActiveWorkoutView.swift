@@ -19,8 +19,10 @@ struct ActiveWorkoutView: View {
 
     @FocusState private var focus: SetField?
     @State private var showingPicker = false
+    @State private var showingQuickLog = false
     @State private var showingFinishConfirm = false
     @State private var showingDiscardConfirm = false
+    @State private var aiAvailable = false
 
     var body: some View {
         NavigationStack {
@@ -49,6 +51,9 @@ struct ActiveWorkoutView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showingQuickLog) {
+                QuickLogView()
+            }
             .confirmationDialog("Finish this workout?", isPresented: $showingFinishConfirm) {
                 Button("Finish Workout") { finish() }
                 Button("Keep Going", role: .cancel) { }
@@ -65,6 +70,7 @@ struct ActiveWorkoutView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { session.refreshRestState() }
         }
+        .task { aiAvailable = AIModel.availability.canOffer }
     }
 
     // MARK: - List
@@ -88,6 +94,18 @@ struct ActiveWorkoutView: View {
                     .padding(.vertical, Theme.Spacing.sm)
             }
             .listRowBackground(Color.clear)
+
+            if aiAvailable {
+                Button {
+                    showingQuickLog = true
+                } label: {
+                    Label("Quick Log with AI", systemImage: "sparkles")
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, Theme.Spacing.xs)
+                }
+                .listRowBackground(Color.clear)
+            }
         }
         .listStyle(.insetGrouped)
         .scrollDismissesKeyboard(.interactively)
@@ -100,6 +118,9 @@ struct ActiveWorkoutView: View {
                 } actions: {
                     Button("Add Exercise") { showingPicker = true }
                         .buttonStyle(.glassProminentCompat)
+                    if aiAvailable {
+                        Button("Quick Log with AI", systemImage: "sparkles") { showingQuickLog = true }
+                    }
                 }
             }
         }

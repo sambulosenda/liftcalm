@@ -30,7 +30,7 @@ struct RoutineWizardView: View {
 
     // Generation state
     @State private var phase: Phase = .input
-    @State private var availability: RoutineWizardService.Availability = .ready
+    @State private var availability: AIModel.Availability = .ready
     @State private var reviewItems: [ReviewItem] = []
     @State private var draftName = ""
     @State private var draftSummary = ""
@@ -65,7 +65,7 @@ struct RoutineWizardView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbarContent }
             .sensoryFeedback(.success, trigger: generatedToken)
-            .onAppear { availability = RoutineWizardService.availability }
+            .onAppear { availability = AIModel.availability }
             .onDisappear { task?.cancel() }
         }
     }
@@ -258,7 +258,7 @@ struct RoutineWizardView: View {
             }
             .buttonStyle(.glassProminentCompat)
             if availability == .modelDownloading {
-                Button("Check again") { availability = RoutineWizardService.availability }
+                Button("Check again") { availability = AIModel.availability }
             }
         }
     }

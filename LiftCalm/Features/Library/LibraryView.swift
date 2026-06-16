@@ -54,7 +54,7 @@ struct LibraryView: View {
                 case .editRoutine(let r): RoutineEditorView(routine: r)
                 }
             }
-            .onAppear { aiAvailable = Self.canOfferAI }
+            .onAppear { aiAvailable = AIModel.availability.canOffer }
         }
     }
 
@@ -188,18 +188,6 @@ struct LibraryView: View {
     // MARK: - Actions
 
     private var addTitle: String { tab == .exercises ? "Add Exercise" : "Add Routine" }
-
-    /// Resolved once in `onAppear` (cached in `aiAvailable`) rather than read in
-    /// `body`, so we don't call into the model framework on every re-evaluation.
-    /// Hidden on hardware that can never run the model; transient states
-    /// (downloading / Apple Intelligence off) still show it so the wizard can
-    /// guide the user to fix them.
-    private static var canOfferAI: Bool {
-        switch RoutineWizardService.availability {
-        case .deviceNotEligible, .unavailable: false
-        default: true
-        }
-    }
 
     private func add() {
         switch tab {

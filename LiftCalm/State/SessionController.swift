@@ -158,6 +158,43 @@ final class SessionController {
         return entry
     }
 
+    /// Logs `setCount` sets of `exercise` at the given load/reps in one shot —
+    /// used by the natural-language quick logger. Reuses the exercise's existing
+    /// entry if it's already in the workout, otherwise appends a new one.
+    @discardableResult
+    func logSets(
+        exercise: Exercise,
+        weightKilograms: Double,
+        reps: Int,
+        setCount: Int,
+        markCompleted: Bool,
+        in workout: Workout
+    ) -> ExerciseEntry {
+        let entry: ExerciseEntry
+        if let existing = workout.entries.first(where: { $0.exercise?.id == exercise.id }) {
+            entry = existing
+        } else {
+            let order = (workout.entries.map(\.order).max() ?? -1) + 1
+            entry = ExerciseEntry(order: order, exercise: exercise)
+            entry.workout = workout
+            insert(entry)
+        }
+        var nextOrder = (entry.sets.map(\.order).max() ?? -1) + 1
+        for _ in 0..<max(1, setCount) {
+            let set = SetEntry(
+                order: nextOrder,
+                weightKilograms: max(0, weightKilograms),
+                reps: max(0, reps),
+                isCompleted: markCompleted
+            )
+            set.entry = entry
+            insert(set)
+            nextOrder += 1
+        }
+        save()
+        return entry
+    }
+
     func removeEntry(_ entry: ExerciseEntry) {
         context?.delete(entry)
         save()

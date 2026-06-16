@@ -73,33 +73,9 @@ struct RoutineRequest {
 
 enum RoutineWizardService {
 
-    enum Availability: Equatable {
-        case ready
-        case deviceNotEligible
-        case appleIntelligenceOff
-        case modelDownloading
-        case unavailable
-    }
-
-    /// Whether the on-device model can run right now. Cheap to query.
-    static var availability: Availability {
-        switch SystemLanguageModel.default.availability {
-        case .available:
-            return .ready
-        case .unavailable(let reason):
-            switch reason {
-            case .deviceNotEligible:           return .deviceNotEligible
-            case .appleIntelligenceNotEnabled: return .appleIntelligenceOff
-            case .modelNotReady:               return .modelDownloading
-            @unknown default:                  return .unavailable
-            }
-        @unknown default:
-            return .unavailable
-        }
-    }
-
     /// Generate one routine. Only exercise *names* are sent to the model; the
-    /// caller maps them back to real `Exercise` rows afterward.
+    /// caller maps them back to real `Exercise` rows afterward. Model
+    /// availability lives in `AIModel`.
     static func generate(request: RoutineRequest, allowedExercises: [String]) async throws -> GeneratedRoutine {
         let session = LanguageModelSession {
             """
