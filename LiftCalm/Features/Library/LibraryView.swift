@@ -22,6 +22,8 @@ struct LibraryView: View {
     @State private var searchText = ""
     @State private var showingCreateExercise = false
     @State private var creatingRoutine = false
+    @State private var generatingRoutine = false
+    @State private var pendingManual = false
     @State private var editingRoutine: WorkoutTemplate?
 
     var body: some View {
@@ -44,6 +46,16 @@ struct LibraryView: View {
             }
             .sheet(isPresented: $creatingRoutine) {
                 RoutineEditorView()
+            }
+            .sheet(isPresented: $generatingRoutine, onDismiss: {
+                // Hand off to the manual editor if the user chose that escape hatch
+                // (presenting only after this sheet has fully dismissed avoids a race).
+                if pendingManual {
+                    pendingManual = false
+                    creatingRoutine = true
+                }
+            }) {
+                RoutineWizardView(onManual: { pendingManual = true })
             }
             .sheet(item: $editingRoutine) { routine in
                 RoutineEditorView(routine: routine)
@@ -110,6 +122,12 @@ struct LibraryView: View {
 
     private var routinesList: some View {
         List {
+            if aiAvailable {
+                Section {
+                    Button { startAIGeneration() } label: { aiGenerateCard }
+                        .buttonStyle(.plain)
+                }
+            }
             if !customTemplates.isEmpty {
                 Section {
                     ForEach(customTemplates) { template in
@@ -144,9 +162,47 @@ struct LibraryView: View {
         .listStyle(.insetGrouped)
     }
 
+    /// Prominent entry point for on-device AI generation, shown atop the routines
+    /// list so the feature isn't buried behind the "+" button.
+    private var aiGenerateCard: some View {
+        HStack(spacing: Theme.Spacing.md) {
+            Image(systemName: "sparkles")
+                .font(.body)
+                .foregroundStyle(Theme.accent)
+                .frame(width: 34, height: 34)
+                .background(Theme.accent.opacity(0.12), in: .circle)
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                Text("Generate with AI")
+                    .font(.body.weight(.semibold))
+                Text("Build a routine on your device")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .contentShape(.rect)
+        .padding(.vertical, Theme.Spacing.xs)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Generate a routine with AI")
+        .accessibilityHint("Builds a routine on your device")
+    }
+
     // MARK: - Actions
 
     private var addTitle: String { tab == .exercises ? "Add Exercise" : "Add Routine" }
+
+    /// Hide the AI option entirely on hardware that can never run the on-device
+    /// model; transient states (downloading / Apple Intelligence off) still show
+    /// it so the wizard can guide the user to fix them.
+    private var aiAvailable: Bool {
+        switch RoutineWizardService.availability {
+        case .deviceNotEligible, .unavailable: false
+        default: true
+        }
+    }
 
     private func add() {
         switch tab {
@@ -158,6 +214,16 @@ struct LibraryView: View {
             } else {
                 presentPaywall(.routines)
             }
+        }
+    }
+
+    /// AI generation produces a custom routine, so it respects the same free-plan
+    /// cap as manual creation.
+    private func startAIGeneration() {
+        if PlusPolicy.canCreateCustomRoutine(currentCount: customTemplates.count, isPlus: store.isPlus) {
+            generatingRoutine = true
+        } else {
+            presentPaywall(.routines)
         }
     }
 
