@@ -30,12 +30,6 @@ struct PaywallView: View {
         Benefit("square.grid.2x2", "Home Screen widgets", "Readiness and quick-start at a glance."),
     ]
 
-    /// On the roadmap, included with the same one-time unlock.
-    private let comingSoon: [Benefit] = [
-        Benefit("icloud", "iCloud sync", "Your training, on every device."),
-        Benefit("applewatch", "Apple Watch app", "Log sets from your wrist."),
-    ]
-
     private var isBusy: Bool { store.purchaseState == .purchasing }
 
     var body: some View {
@@ -44,7 +38,6 @@ struct PaywallView: View {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
                     header
                     benefitsCard
-                    comingSoonCard
                     reassurance
                 }
                 .padding(Theme.Spacing.lg)
@@ -103,20 +96,6 @@ struct PaywallView: View {
         }
         .padding(.vertical, Theme.Spacing.xs)
         .glassCard()
-    }
-
-    private var comingSoonCard: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.md) {
-            SectionHeader("Coming to Plus", subtitle: "Included with the same one-time unlock")
-            VStack(spacing: 0) {
-                ForEach(Array(comingSoon.enumerated()), id: \.element.id) { index, benefit in
-                    if index > 0 { Divider().padding(.leading, 56) }
-                    BenefitRow(benefit: benefit, tint: Theme.calmBlue, muted: true)
-                }
-            }
-            .padding(.vertical, Theme.Spacing.xs)
-            .glassCard()
-        }
     }
 
     private var reassurance: some View {
