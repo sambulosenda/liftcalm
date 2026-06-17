@@ -26,6 +26,42 @@ enum WorkoutMetrics {
         return weight * Double(reps)
     }
 
+    /// Share of a working set credited to each synergist muscle. Synergists do
+    /// real but lesser work than the prime mover, so they earn a fraction of
+    /// the set on the activation map. 0.5 reads well: a heavy compound clearly
+    /// lights its assisting muscles without overpowering the muscle it trains.
+    static let secondaryMuscleFactor: Double = 0.5
+
+    /// One exercise's completed working sets plus the muscles it trains, ready
+    /// to be distributed onto the activation map.
+    struct MuscleContribution: Equatable {
+        let primary: MuscleGroup
+        let secondaries: [MuscleGroup]
+        /// Completed working sets (the universal training-volume currency —
+        /// robust to bodyweight work, which carries no load but real sets).
+        let sets: Double
+    }
+
+    /// Distributes completed working sets across muscles for the activation
+    /// map. The primary muscle gets full credit; each synergist gets
+    /// `secondaryFactor` of the same set. Muscles trained by several exercises
+    /// accumulate, yielding "effective sets per muscle" — the metric serious
+    /// lifters program around. Pure over the passed-in contributions so it's
+    /// unit-testable without a store. Returns only muscles with positive work.
+    static func muscleSets(
+        from contributions: [MuscleContribution],
+        secondaryFactor: Double = secondaryMuscleFactor
+    ) -> [MuscleGroup: Double] {
+        var totals: [MuscleGroup: Double] = [:]
+        for contribution in contributions where contribution.sets > 0 {
+            totals[contribution.primary, default: 0] += contribution.sets
+            for synergist in contribution.secondaries {
+                totals[synergist, default: 0] += contribution.sets * secondaryFactor
+            }
+        }
+        return totals.filter { $0.value > 0 }
+    }
+
     /// Detects estimated-1RM personal records set in `workout`, comparing each
     /// exercise against its best qualifying set across `history` (prior finished
     /// workouts, excluding this one). One record per exercise. An exercise with
@@ -112,6 +148,19 @@ extension ExerciseEntry {
         sets.reduce(0) { $0 + $1.volume }
     }
 
+    /// This exercise's contribution to the muscle-activation map, or `nil` when
+    /// it isn't linked to a library movement or logged no qualifying sets.
+    var muscleContribution: WorkoutMetrics.MuscleContribution? {
+        guard let exercise else { return nil }
+        let sets = Double(completedSetCount)
+        guard sets > 0 else { return nil }
+        return WorkoutMetrics.MuscleContribution(
+            primary: exercise.muscleGroup,
+            secondaries: exercise.secondaryMuscles,
+            sets: sets
+        )
+    }
+
     /// Number of completed working sets.
     var completedSetCount: Int {
         sets.filter(\.countsTowardMetrics).count
@@ -150,5 +199,22 @@ extension Workout {
             totals[region, default: 0] += entry.totalVolume
         }
         return totals.filter { $0.value > 0 }
+    }
+
+    /// Effective working sets per muscle for this session's activation map —
+    /// primary muscles at full credit, synergists at a share. Counts sets (not
+    /// load) so bodyweight work still registers. Empty when nothing qualifying.
+    func muscleSets() -> [MuscleGroup: Double] {
+        WorkoutMetrics.muscleSets(from: entries.compactMap(\.muscleContribution))
+    }
+}
+
+extension Collection where Element == Workout {
+    /// Combined effective-sets-per-muscle across these sessions — used for the
+    /// multi-session (e.g. weekly) activation heatmap.
+    func muscleSets() -> [MuscleGroup: Double] {
+        WorkoutMetrics.muscleSets(
+            from: flatMap(\.entries).compactMap(\.muscleContribution)
+        )
     }
 }

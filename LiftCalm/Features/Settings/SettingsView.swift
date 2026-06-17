@@ -32,6 +32,18 @@ struct SettingsView: View {
                     }
                 }
 
+                Section {
+                    Picker("Body model", selection: $settings.bodyModel) {
+                        ForEach(BodyModel.allCases) { model in
+                            Text(model.displayName).tag(model)
+                        }
+                    }
+                } header: {
+                    Text("Muscle Map")
+                } footer: {
+                    Text("Which silhouette the muscle map draws. A display choice only — LiftCalm never asks for or stores your sex.")
+                }
+
                 plusSection
                 // iCloud Sync deferred to v1.1 — re-add `syncSection` here once the
                 // CloudKit capability is added in Xcode and sync is device-tested. Until

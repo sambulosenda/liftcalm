@@ -70,6 +70,29 @@ private struct PlusProgressContent: View {
         return ProgressMetrics.sessionPoints(forExercise: id, in: workouts)
     }
 
+    /// Sessions finished in the rolling last 7 days, for the weekly body map.
+    private var weekWorkouts: [Workout] {
+        let weekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+        return workouts.filter { ($0.endedAt ?? $0.startedAt) >= weekAgo }
+    }
+
+    /// Front+back map of the week's training emphasis. Hidden with nothing
+    /// logged in the window. The "sets per muscle" framing is the metric
+    /// serious lifters program around — the analytical companion to the charts.
+    @ViewBuilder
+    private var weeklyMuscleSection: some View {
+        let sets = weekWorkouts.muscleSets()
+        if !sets.isEmpty {
+            VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                MuscleMapCard(setsByGroup: sets, title: "Trained this week", model: settings.bodyModel)
+                Text("Effective sets per muscle over the last 7 days.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, Theme.Spacing.xs)
+            }
+        }
+    }
+
     var body: some View {
         if tracked.isEmpty {
             ContentUnavailableView(
@@ -80,6 +103,7 @@ private struct PlusProgressContent: View {
         } else {
             ScrollView {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
+                    weeklyMuscleSection
                     exercisePicker
                     Picker("Metric", selection: $metric) {
                         ForEach(ProgressMetric.allCases) { Text($0.label).tag($0) }
@@ -335,7 +359,7 @@ private struct LockedProgressView: View {
                     Text("See your strength climb")
                         .font(.title2.weight(.bold))
                         .fixedSize(horizontal: false, vertical: true)
-                    Text("Plus charts every lift's estimated 1RM and volume over time, so you can see exactly what's working.")
+                    Text("Plus charts every lift's estimated 1RM and volume over time, and maps the muscles you trained each week — so you can see exactly what's working.")
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -464,12 +488,14 @@ private enum ProgressPreview {
     }()
 }
 
+#if DEBUG
 #Preview("Plus") {
     ProgressDashboardView()
         .modelContainer(ProgressPreview.container)
         .environment(AppSettings())
         .environment(StoreManager.unlockedPreview)
 }
+#endif
 
 #Preview("Locked") {
     ProgressDashboardView()

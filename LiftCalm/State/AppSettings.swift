@@ -20,6 +20,8 @@ final class AppSettings {
 
     var weightUnit: WeightUnit { didSet { store(weightUnit.rawValue, .weightUnit) } }
     var experienceLevel: ExperienceLevel { didSet { store(experienceLevel.rawValue, .experience) } }
+    /// Which body silhouette the muscle-activation map draws. Display-only.
+    var bodyModel: BodyModel { didSet { store(bodyModel.rawValue, .bodyModel) } }
     var goal: TrainingGoal { didSet { store(goal.rawValue, .goal); syncRestToGoal() } }
     /// Default rest, seconds. Initialised from the goal but user-adjustable.
     var defaultRestSeconds: Int { didSet { store(defaultRestSeconds, .rest) } }
@@ -44,6 +46,8 @@ final class AppSettings {
             .flatMap(WeightUnit.init(rawValue:)) ?? .kilograms
         experienceLevel = defaults.string(forKey: Key.experience.rawValue)
             .flatMap(ExperienceLevel.init(rawValue:)) ?? .beginner
+        bodyModel = defaults.string(forKey: Key.bodyModel.rawValue)
+            .flatMap(BodyModel.init(rawValue:)) ?? .masculine
         let storedGoal = defaults.string(forKey: Key.goal.rawValue)
             .flatMap(TrainingGoal.init(rawValue:)) ?? .general
         goal = storedGoal
@@ -65,7 +69,7 @@ final class AppSettings {
 
     private enum Key: String {
         case weightUnit, experience, goal, rest, autoRest, haptics, onboarded
-        case restNotify, reminderOn, reminderHour, reminderMinute
+        case restNotify, reminderOn, reminderHour, reminderMinute, bodyModel
     }
 
     private func store(_ value: Any, _ key: Key) {

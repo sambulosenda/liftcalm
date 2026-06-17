@@ -79,6 +79,15 @@ enum WeightUnit: String, Codable, CaseIterable, Identifiable, Sendable {
     }
 }
 
+/// Body diagram shown on the muscle-activation map. A pure display preference —
+/// LiftCalm collects no biological sex, so this never leaves the device and
+/// drives nothing but which silhouette is drawn. Defaults to masculine.
+enum BodyModel: String, Codable, CaseIterable, Identifiable, Sendable {
+    case masculine, feminine
+    var id: String { rawValue }
+    var displayName: String { rawValue.capitalized }
+}
+
 /// Captured during onboarding; tunes starter templates and copy tone.
 enum ExperienceLevel: String, Codable, CaseIterable, Identifiable, Sendable {
     case beginner, intermediate, advanced

@@ -33,6 +33,7 @@ struct WorkoutSummaryView: View {
                 VStack(spacing: Theme.Spacing.xl) {
                     celebrationHeader
                     statsCard
+                    musclesCard
                     if !summary.personalRecords.isEmpty {
                         personalRecordsSection
                     }
@@ -80,6 +81,18 @@ struct WorkoutSummaryView: View {
         .padding(.top, Theme.Spacing.sm)
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
+    }
+
+    // MARK: - Muscles worked
+
+    /// Front+back activation map for the session. Hidden when nothing
+    /// qualifying was logged (e.g. an all-warm-up or empty session).
+    @ViewBuilder
+    private var musclesCard: some View {
+        let sets = workout.muscleSets()
+        if !sets.isEmpty {
+            MuscleMapCard(setsByGroup: sets, model: settings.bodyModel)
+        }
     }
 
     private var isPersonalRecord: Bool { !summary.personalRecords.isEmpty }

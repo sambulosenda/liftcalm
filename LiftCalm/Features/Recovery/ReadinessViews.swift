@@ -203,6 +203,7 @@ private struct FactorRow: View {
     .environment(StoreManager())
 }
 
+#if DEBUG
 #Preview("Card – Plus") {
     NavigationStack {
         ScrollView {
@@ -214,6 +215,7 @@ private struct FactorRow: View {
     }
     .environment(StoreManager.unlockedPreview)
 }
+#endif
 
 #Preview("Detail") {
     NavigationStack {

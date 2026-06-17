@@ -27,6 +27,21 @@ struct LiftCalmApp: App {
 
     var body: some Scene {
         WindowGroup {
+            #if DEBUG
+            if let screen = ScreenshotHarness.requestedScreen {
+                // App Store screenshot mode (launch arg only) — seeds demo data
+                // and renders one screen. Never reached in normal use or Release.
+                ScreenshotRootView(screen: screen)
+            } else {
+                productionRoot
+            }
+            #else
+            productionRoot
+            #endif
+        }
+    }
+
+    private var productionRoot: some View {
             AppRootView()
                 .environment(settings)
                 .environment(session)
@@ -56,7 +71,6 @@ struct LiftCalmApp: App {
                         WidgetBridge.refresh(context: modelContainer.mainContext)
                     }
                 }
-        }
-        .modelContainer(modelContainer)
+                .modelContainer(modelContainer)
     }
 }

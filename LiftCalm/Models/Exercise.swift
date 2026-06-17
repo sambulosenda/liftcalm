@@ -16,6 +16,11 @@ final class Exercise {
     var id: UUID = UUID()
     var name: String = ""
     var muscleGroup: MuscleGroup = MuscleGroup.other
+    /// Synergist muscles the movement also trains, beyond the primary
+    /// `muscleGroup`. Drives the muscle-activation map (a compound like the
+    /// bench press lights triceps/shoulders, not just the chest). Empty for
+    /// isolation moves. Default `[]` keeps the property CloudKit-safe.
+    var secondaryMuscles: [MuscleGroup] = []
     var equipment: Equipment = Equipment.other
     /// True for movements the user added themselves (shown under "My Exercises").
     var isCustom: Bool = false
@@ -34,12 +39,14 @@ final class Exercise {
         name: String,
         muscleGroup: MuscleGroup,
         equipment: Equipment,
+        secondaryMuscles: [MuscleGroup] = [],
         isCustom: Bool = false,
         notes: String = ""
     ) {
         self.id = id
         self.name = name
         self.muscleGroup = muscleGroup
+        self.secondaryMuscles = secondaryMuscles
         self.equipment = equipment
         self.isCustom = isCustom
         self.notes = notes

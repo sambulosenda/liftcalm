@@ -1,0 +1,6 @@
+# frameit generated output
+*_framed.png
+# raw simulator captures (regenerate from the sim; large binaries)
+en-US/*.png
+# locally-copied Apple San Francisco font — licensed, must NOT be committed
+fonts/

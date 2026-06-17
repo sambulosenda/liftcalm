@@ -1,0 +1,17 @@
+{
+  "device_frame_version": "latest",
+  "default": {
+    "background": "./background.jpg",
+    "padding": 100,
+    "show_complete_frame": false,
+    "title_below_image": false,
+    "font_scale_factor": 0.1,
+    "title": {
+      "font": "fonts/SFNS.ttf",
+      "color": "#1C3A2E"
+    }
+  },
+  "data": [
+    { "filter": "01_muscle_map", "title": { "color": "#277552" } }
+  ]
+}

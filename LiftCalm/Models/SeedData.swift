@@ -38,39 +38,50 @@ enum SeedData {
 
     /// Built-in movements. Keep names canonical; users add their own variants.
     static let builtInExercises: [Exercise] = {
-        func ex(_ name: String, _ muscle: MuscleGroup, _ equip: Equipment) -> Exercise {
-            Exercise(id: stableID("ex:\(name)"), name: name, muscleGroup: muscle, equipment: equip)
+        func ex(
+            _ name: String,
+            _ muscle: MuscleGroup,
+            _ equip: Equipment,
+            secondary: [MuscleGroup] = []
+        ) -> Exercise {
+            Exercise(
+                id: stableID("ex:\(name)"),
+                name: name,
+                muscleGroup: muscle,
+                equipment: equip,
+                secondaryMuscles: secondary
+            )
         }
         return [
             // Push
-            ex("Barbell Bench Press", .chest, .barbell),
-            ex("Incline Dumbbell Press", .chest, .dumbbell),
-            ex("Cable Fly", .chest, .cable),
-            ex("Overhead Press", .shoulders, .barbell),
+            ex("Barbell Bench Press", .chest, .barbell, secondary: [.triceps, .shoulders]),
+            ex("Incline Dumbbell Press", .chest, .dumbbell, secondary: [.shoulders, .triceps]),
+            ex("Cable Fly", .chest, .cable, secondary: [.shoulders]),
+            ex("Overhead Press", .shoulders, .barbell, secondary: [.triceps, .chest]),
             ex("Dumbbell Lateral Raise", .shoulders, .dumbbell),
             ex("Triceps Pushdown", .triceps, .cable),
             ex("Overhead Triceps Extension", .triceps, .dumbbell),
             // Pull
-            ex("Deadlift", .back, .barbell),
-            ex("Pull-Up", .back, .bodyweight),
-            ex("Bent-Over Row", .back, .barbell),
-            ex("Lat Pulldown", .back, .cable),
-            ex("Seated Cable Row", .back, .cable),
+            ex("Deadlift", .back, .barbell, secondary: [.hamstrings, .glutes, .core]),
+            ex("Pull-Up", .back, .bodyweight, secondary: [.biceps]),
+            ex("Bent-Over Row", .back, .barbell, secondary: [.biceps]),
+            ex("Lat Pulldown", .back, .cable, secondary: [.biceps]),
+            ex("Seated Cable Row", .back, .cable, secondary: [.biceps]),
             ex("Barbell Curl", .biceps, .barbell),
             ex("Dumbbell Hammer Curl", .biceps, .dumbbell),
             // Legs
-            ex("Back Squat", .quads, .barbell),
-            ex("Front Squat", .quads, .barbell),
-            ex("Leg Press", .quads, .machine),
-            ex("Romanian Deadlift", .hamstrings, .barbell),
+            ex("Back Squat", .quads, .barbell, secondary: [.glutes, .hamstrings, .core]),
+            ex("Front Squat", .quads, .barbell, secondary: [.glutes, .core]),
+            ex("Leg Press", .quads, .machine, secondary: [.glutes, .hamstrings]),
+            ex("Romanian Deadlift", .hamstrings, .barbell, secondary: [.glutes, .back]),
             ex("Leg Curl", .hamstrings, .machine),
-            ex("Hip Thrust", .glutes, .barbell),
-            ex("Walking Lunge", .glutes, .dumbbell),
+            ex("Hip Thrust", .glutes, .barbell, secondary: [.hamstrings]),
+            ex("Walking Lunge", .glutes, .dumbbell, secondary: [.quads, .hamstrings]),
             ex("Standing Calf Raise", .calves, .machine),
             // Core / full body
-            ex("Plank", .core, .bodyweight),
+            ex("Plank", .core, .bodyweight, secondary: [.shoulders]),
             ex("Hanging Leg Raise", .core, .bodyweight),
-            ex("Kettlebell Swing", .fullBody, .kettlebell),
+            ex("Kettlebell Swing", .fullBody, .kettlebell, secondary: [.glutes, .hamstrings, .back, .shoulders]),
         ]
     }()
 

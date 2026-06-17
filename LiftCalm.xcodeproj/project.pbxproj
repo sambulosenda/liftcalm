@@ -13,6 +13,7 @@
 		BDF6A8E564589B962E0ACB49 /* LiftCalmWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 45606B766C022DD99CA42338 /* LiftCalmWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C31DEA0177CD8975E59C907B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EEED3BD13ACF004C2B325735 /* PrivacyInfo.xcprivacy */; };
 		C47774A62D4EE250D187B527 /* LiftCalmWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70F393EF4EDF1A731AF66E2 /* LiftCalmWidgetBundle.swift */; };
+		D8243B26B1280A60776FFF98 /* MuscleMap in Frameworks */ = {isa = PBXBuildFile; productRef = 0FB6019821D76E9292E89573 /* MuscleMap */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,28 +65,22 @@
 		96C84B7989160AB690567964 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B70F393EF4EDF1A731AF66E2 /* LiftCalmWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiftCalmWidgetBundle.swift; sourceTree = "<group>"; };
 		C07BDD07232A0D9F76385BBA /* ReadinessWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReadinessWidget.swift; sourceTree = "<group>"; };
-		EEED3BD13ACF004C2B325735 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		EEED3BD13ACF004C2B325735 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4FCF5E6D2FDF45700008A78F /* LiftCalm */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = LiftCalm;
 			sourceTree = "<group>";
 		};
 		4FCF5E7B2FDF45710008A78F /* LiftCalmTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = LiftCalmTests;
 			sourceTree = "<group>";
 		};
 		4FCF5E852FDF45710008A78F /* LiftCalmUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = LiftCalmUITests;
 			sourceTree = "<group>";
 		};
@@ -96,6 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8243B26B1280A60776FFF98 /* MuscleMap in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,6 +210,9 @@
 				4FCF5E6D2FDF45700008A78F /* LiftCalm */,
 			);
 			name = LiftCalm;
+			packageProductDependencies = (
+				0FB6019821D76E9292E89573 /* MuscleMap */,
+			);
 			productName = LiftCalm;
 			productReference = 4FCF5E6B2FDF45700008A78F /* LiftCalm.app */;
 			productType = "com.apple.product-type.application";
@@ -292,6 +291,9 @@
 			);
 			mainGroup = 4FCF5E622FDF45700008A78F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9FF692BBCF5C4DA95F1271EC /* XCRemoteSwiftPackageReference "MuscleMap" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4FCF5E6C2FDF45700008A78F /* Products */;
 			projectDirPath = "";
@@ -778,6 +780,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9FF692BBCF5C4DA95F1271EC /* XCRemoteSwiftPackageReference "MuscleMap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/melihcolpan/MuscleMap.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0FB6019821D76E9292E89573 /* MuscleMap */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9FF692BBCF5C4DA95F1271EC /* XCRemoteSwiftPackageReference "MuscleMap" */;
+			productName = MuscleMap;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4FCF5E632FDF45700008A78F /* Project object */;
 }

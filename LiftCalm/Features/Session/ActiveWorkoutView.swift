@@ -94,18 +94,6 @@ struct ActiveWorkoutView: View {
                     .padding(.vertical, Theme.Spacing.sm)
             }
             .listRowBackground(Color.clear)
-
-            if aiAvailable {
-                Button {
-                    showingQuickLog = true
-                } label: {
-                    Label("Quick Log with AI", systemImage: "sparkles")
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, Theme.Spacing.xs)
-                }
-                .listRowBackground(Color.clear)
-            }
         }
         .listStyle(.insetGrouped)
         .scrollDismissesKeyboard(.interactively)
@@ -171,6 +159,11 @@ struct ActiveWorkoutView: View {
         ToolbarItem(placement: .topBarTrailing) {
             Button("Finish") { showingFinishConfirm = true }
                 .fontWeight(.semibold)
+        }
+        if aiAvailable {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Quick Log", systemImage: "sparkles") { showingQuickLog = true }
+            }
         }
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
