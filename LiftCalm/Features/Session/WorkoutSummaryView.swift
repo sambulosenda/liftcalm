@@ -19,6 +19,9 @@ struct WorkoutSummary: Identifiable {
 
 struct WorkoutSummaryView: View {
     let summary: WorkoutSummary
+    /// Hidden only by the DEBUG screenshot harness, which renders this screen
+    /// standalone as a marketing hero and wants it free of dismiss chrome.
+    var showsDismiss = true
 
     @Environment(\.dismiss) private var dismiss
     @Environment(AppSettings.self) private var settings
@@ -44,18 +47,22 @@ struct WorkoutSummaryView: View {
             .navigationTitle("Summary")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
-                        .fontWeight(.semibold)
+                if showsDismiss {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Done") { dismiss() }
+                            .fontWeight(.semibold)
+                    }
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                Button("Done") { dismiss() }
-                    .buttonStyle(.glassProminentCompat)
-                    .controlSize(.extraLarge)
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, Theme.Spacing.lg)
-                    .padding(.bottom, Theme.Spacing.sm)
+                if showsDismiss {
+                    Button("Done") { dismiss() }
+                        .buttonStyle(.glassProminentCompat)
+                        .controlSize(.extraLarge)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, Theme.Spacing.lg)
+                        .padding(.bottom, Theme.Spacing.sm)
+                }
             }
         }
         .onAppear { appeared = true }

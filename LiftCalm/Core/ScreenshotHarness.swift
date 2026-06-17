@@ -102,7 +102,7 @@ private struct MuscleMapSummaryHost: View {
     var body: some View {
         Group {
             if let summary {
-                WorkoutSummaryView(summary: summary)
+                WorkoutSummaryView(summary: summary, showsDismiss: false)
             } else {
                 Color.clear
             }
